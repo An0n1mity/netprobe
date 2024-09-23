@@ -1,0 +1,19 @@
+Determining if the function pcap_get_pfring_id exists failed with the following output:
+Change Dir: /home/an0n1mity/Desktop/cartographie-passive/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_7dc3a/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_7dc3a.dir/build.make CMakeFiles/cmTC_7dc3a.dir/build
+gmake[1]: Entering directory '/home/an0n1mity/Desktop/cartographie-passive/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7dc3a.dir/CheckFunctionExists.c.o
+/usr/bin/gcc   -DCHECK_FUNCTION_EXISTS=pcap_get_pfring_id -o CMakeFiles/cmTC_7dc3a.dir/CheckFunctionExists.c.o -c /usr/share/cmake-3.22/Modules/CheckFunctionExists.c
+Linking C executable cmTC_7dc3a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7dc3a.dir/link.txt --verbose=1
+/usr/bin/gcc  -DCHECK_FUNCTION_EXISTS=pcap_get_pfring_id CMakeFiles/cmTC_7dc3a.dir/CheckFunctionExists.c.o -o cmTC_7dc3a  /usr/lib/x86_64-linux-gnu/libpcap.so 
+/usr/bin/ld: CMakeFiles/cmTC_7dc3a.dir/CheckFunctionExists.c.o: in function `main':
+CheckFunctionExists.c:(.text+0x14): undefined reference to `pcap_get_pfring_id'
+collect2: error: ld returned 1 exit status
+gmake[1]: *** [CMakeFiles/cmTC_7dc3a.dir/build.make:100: cmTC_7dc3a] Error 1
+gmake[1]: Leaving directory '/home/an0n1mity/Desktop/cartographie-passive/build/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_7dc3a/fast] Error 2
+
+
+
