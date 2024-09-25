@@ -9,6 +9,7 @@
 #include "Analyzers/ARP/ARPAnalyzer.hpp"
 #include "Analyzers/SP/SPAnalyzer.hpp"
 #include "Analyzers/SSDP/SSDPAnalyzer.hpp"
+#include "Analyzers/LLDP/LLDPAnalyzer.hpp"
 
 int main() {
     // Replace with the actual IP address of the interface you want to capture on
@@ -23,13 +24,15 @@ int main() {
     ARPAnalyzer arpAnalyzer;
     SPAnalyzer spAnalyzer;
     SSDPAnalyzer ssdpAnalyzer;
+    LLDPAnalyzer lldpAnalyzer;
 
     // Add analyzers to the manager
-    //captureManager.addAnalyzer(&dhcpAnalyzer);
-    //captureManager.addAnalyzer(&dnsAnalyzer);
-    //captureManager.addAnalyzer(&arpAnalyzer);
-    //captureManager.addAnalyzer(&spAnalyzer);
+    captureManager.addAnalyzer(&dhcpAnalyzer);
+    captureManager.addAnalyzer(&dnsAnalyzer);
+    captureManager.addAnalyzer(&arpAnalyzer);
+    captureManager.addAnalyzer(&spAnalyzer);
     captureManager.addAnalyzer(&ssdpAnalyzer);
+    captureManager.addAnalyzer(&lldpAnalyzer);
 
     // Start capturing packets
     captureManager.startCapture();
@@ -46,6 +49,7 @@ int main() {
     arpAnalyzer.printHostMap();
     spAnalyzer.printHostMap();
     ssdpAnalyzer.printHostMap();
+    lldpAnalyzer.printHostMap();
 
     return 0;
 }
