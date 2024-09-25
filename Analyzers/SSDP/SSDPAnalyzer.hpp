@@ -8,6 +8,16 @@
 // SSDPAnalyzer class (derived from Analyzer)
 class SSDPAnalyzer : public Analyzer {
 private:
+    std::string nt;
+    std::string nts;
+    std::string location;
+    std::string usn;
+    std::string server;
+
+    // Variables for M-SEARCH requests
+    std::string clientIP;
+    std::string clientMAC;
+    
     std::map<std::string, std::string> ssdpMap; // Store SSDP details, keyed by USN or Location
 
 public:
