@@ -127,7 +127,8 @@ if __name__ == "__main__":
     #client_mac = send_dhcp_discover()  # Client sends DHCP Discover
     #send_dhcp_request(client_mac)      # Client sends DHCP Request
 
-    send_pcap_file("pcaps/DHCP/DHCP.pcap")  # Send a PCAP file with DHCP transaction
-    send_pcap_file("pcaps/ARP/arp.pcap")  # Send a PCAP file with DHCP transaction
-
-
+    #send_pcap_file("pcaps/DHCP/DHCP.pcap")  # Send a PCAP file with DHCP transaction
+    #send_pcap_file("pcaps/ARP/arp.pcap")  # Send a PCAP file with DHCP transaction
+    #send_pcap_file("pcaps/SP/SP.pcapng")  # Send a PCAP file with SP protocol
+    send_pcap_file("pcaps/SSDP/SSDP.pcapng")  # Send a PCAP file with SP protocol
+    

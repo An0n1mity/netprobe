@@ -7,6 +7,8 @@
 #include "Analyzers/DHCP/DHCPAnalyzer.hpp"
 #include "Analyzers/mDNS/mDNSAnalyzer.hpp"
 #include "Analyzers/ARP/ARPAnalyzer.hpp"
+#include "Analyzers/SP/SPAnalyzer.hpp"
+#include "Analyzers/SSDP/SSDPAnalyzer.hpp"
 
 int main() {
     // Replace with the actual IP address of the interface you want to capture on
@@ -19,11 +21,15 @@ int main() {
     DHCPAnalyzer dhcpAnalyzer;
     mDNSAnalyzer dnsAnalyzer;
     ARPAnalyzer arpAnalyzer;
+    SPAnalyzer spAnalyzer;
+    SSDPAnalyzer ssdpAnalyzer;
 
     // Add analyzers to the manager
-    captureManager.addAnalyzer(&dhcpAnalyzer);
-    captureManager.addAnalyzer(&dnsAnalyzer);
-    captureManager.addAnalyzer(&arpAnalyzer);
+    //captureManager.addAnalyzer(&dhcpAnalyzer);
+    //captureManager.addAnalyzer(&dnsAnalyzer);
+    //captureManager.addAnalyzer(&arpAnalyzer);
+    //captureManager.addAnalyzer(&spAnalyzer);
+    captureManager.addAnalyzer(&ssdpAnalyzer);
 
     // Start capturing packets
     captureManager.startCapture();
@@ -38,6 +44,8 @@ int main() {
     // Print results from DHCP Analyzer
     dhcpAnalyzer.printHostMap();
     arpAnalyzer.printHostMap();
+    spAnalyzer.printHostMap();
+    ssdpAnalyzer.printHostMap();
 
     return 0;
 }
