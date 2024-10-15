@@ -2,20 +2,22 @@
 #define LLDP_ANALYZER_HPP
 
 #include "../Analyzer.hpp"
-#include <string>
+#include "../../Layers/LLDP/LLDPLayer.hpp"
+
 #include <map>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+#include <string>
+#include <unordered_map> 
 
 // LLDPAnalyzer class (derived from Analyzer)
 class LLDPAnalyzer : public Analyzer {
-private:
-    std::map<std::string, std::map<std::string, std::string>> lldpMap; // Store LLDP details, keyed by MAC address
 
 public:
     // Method to analyze a packet (overrides the virtual method in Analyzer)
     void analyzePacket(pcpp::Packet& parsedPacket) override;
-
-    // Print captured LLDP information
-    void printHostMap();
 };
 
 #endif // LLDP_ANALYZER_HPP
