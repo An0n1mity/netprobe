@@ -20,7 +20,7 @@ include_directories("/usr/local/include/pcapplusplus")
 include_directories(${PCAP_INCLUDE_DIR} ${JSONCPP_INCLUDE_DIRS} ${PcapPlusPlus_INCLUDE_DIRS})
 
 #add_executable(cartographie-passive ${sources})
-add_executable(cartographie-passive main.cpp "Analyzers/DHCP/DHCPAnalyzer.cpp" "Analyzers/mDNS/mDNSAnalyzer.cpp" "Analyzers/ARP/ARPAnalyzer.cpp" "Analyzers/SSDP/SSDPAnalyzer.cpp" "Analyzers/LLDP/LLDPAnalyzer.cpp" "Layers/LLDP/LLDPLayer.cpp" "Layers/STP/STPLayer.cpp" "Analyzers/STP/STPAnalyzer.cpp")
+add_executable(cartographie-passive main.cpp "Analyzers/DHCP/DHCPAnalyzer.cpp" "Analyzers/mDNS/mDNSAnalyzer.cpp" "Analyzers/ARP/ARPAnalyzer.cpp" "Analyzers/SSDP/SSDPAnalyzer.cpp" "Analyzers/LLDP/LLDPAnalyzer.cpp" "Layers/LLDP/LLDPLayer.cpp" "Layers/STP/STPLayer.cpp" "Analyzers/STP/STPAnalyzer.cpp" "Analyzers/CDP/CDPAnalyzer.cpp")
 
 target_link_libraries(cartographie-passive ${PCAP_LIBRARY} ${JSONCPP_LIBRARIES} Pcap++ Packet++ Common++ pcap pthread)
 
