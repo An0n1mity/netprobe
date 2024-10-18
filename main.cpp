@@ -7,9 +7,9 @@
 #include "Analyzers/DHCP/DHCPAnalyzer.hpp"
 #include "Analyzers/mDNS/mDNSAnalyzer.hpp"
 #include "Analyzers/ARP/ARPAnalyzer.hpp"
-#include "Analyzers/SP/SPAnalyzer.hpp"
 #include "Analyzers/SSDP/SSDPAnalyzer.hpp"
 #include "Analyzers/LLDP/LLDPAnalyzer.hpp"
+#include "Analyzers/CDP/CDPAnalyzer.hpp"
 
 int main() {
     // Replace with the actual IP address of the interface you want to capture on
@@ -22,17 +22,17 @@ int main() {
     DHCPAnalyzer dhcpAnalyzer;
     mDNSAnalyzer dnsAnalyzer;
     ARPAnalyzer arpAnalyzer;
-    SPAnalyzer spAnalyzer;
     SSDPAnalyzer ssdpAnalyzer;
     LLDPAnalyzer lldpAnalyzer;
+    CDPAnalyzer cdpAnalyzer;
 
     // Add analyzers to the manager
-    captureManager.addAnalyzer(&dhcpAnalyzer);
-    captureManager.addAnalyzer(&dnsAnalyzer);
-    captureManager.addAnalyzer(&arpAnalyzer);
-    captureManager.addAnalyzer(&spAnalyzer);
+    //captureManager.addAnalyzer(&dhcpAnalyzer);
+    //captureManager.addAnalyzer(&dnsAnalyzer);
+    //captureManager.addAnalyzer(&arpAnalyzer);
     captureManager.addAnalyzer(&ssdpAnalyzer);
     captureManager.addAnalyzer(&lldpAnalyzer);
+    captureManager.addAnalyzer(&cdpAnalyzer);
 
     // Start capturing packets
     captureManager.startCapture();
@@ -44,12 +44,12 @@ int main() {
     // Stop capturing
     captureManager.stopCapture();
 
-    // Print results from DHCP Analyzer
-    dhcpAnalyzer.printHostMap();
-    arpAnalyzer.printHostMap();
-    spAnalyzer.printHostMap();
-    ssdpAnalyzer.printHostMap();
-    lldpAnalyzer.printHostMap();
+    // Print results from Analyzers
+    //dhcpAnalyzer.printHostMap();
+    //arpAnalyzer.printHostMap();
+    //ssdpAnalyzer.printHostMap();
+    //lldpAnalyzer.printHostMap();
+    cdpAnalyzer.printHostMap();
 
     return 0;
 }

@@ -131,4 +131,7 @@ if __name__ == "__main__":
     #send_pcap_file("pcaps/ARP/arp.pcap")  # Send a PCAP file with DHCP transaction
     #send_pcap_file("pcaps/SP/SP.pcapng")  # Send a PCAP file with SP protocol
     #send_pcap_file("pcaps/SSDP/SSDP.pcapng")  # Send a PCAP file with SSDP protocol
-    send_pcap_file("pcaps/LLDP/LLDP.pcap")  # Send a PCAP file with LLDP protocol
+    #send_pcap_file("pcaps/LLDP/LLDP.pcap")  # Send a PCAP file with LLDP protocol
+    #send_pcap_file("pcaps/CDP/cdp.pcap")  # Send a PCAP file with CDP protocol
+    send_pcap_file("pcaps/CDP/cdp_v2.pcap")  # Send a PCAP file with CDP protocol
+    #send_pcap_file("pcaps/WOL/wol.pcap")  # Send a PCAP file with WOL protocol
