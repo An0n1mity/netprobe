@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  cartographie-passive:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    network_mode: "host" # Allows the container to access the host's network
+    cap_add:
+      - NET_RAW      # Allows the container to capture raw packets
+      - NET_ADMIN    # Grants additional network-related privileges
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - INTERFACE=eth0
+      - TIMEOUT=-1
+    command: ["./build/cartographie-passive"]
