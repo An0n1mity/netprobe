@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.5.0)
 project(cartographie-passive VERSION 0.1.0 LANGUAGES C CXX)
 
 include(FindPCAP.cmake)
+
 find_package(PkgConfig REQUIRED)
 find_package(PcapPlusPlus REQUIRED)
 pkg_check_modules(JSONCPP jsoncpp)
