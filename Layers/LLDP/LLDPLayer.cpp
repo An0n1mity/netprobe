@@ -69,7 +69,7 @@ LLDPLayer::TLV LLDPLayer::getTLV(uint8_t type) const {
 }
 
 // Getters for specific TLVs
-struct Chassis LLDPLayer::getChassis() const {
+struct LLDPLayer::Chassis LLDPLayer::getChassis() const {
     TLV tlv = getTLV(LLDP_TLV_TYPE_CHASSIS_ID);
     if (tlv.length == 0) {
         return {CHASSIS_ID_SUBTYPE_LOCALLY_ASSIGNED, ""}; // Default value
@@ -158,7 +158,7 @@ std::string LLDPLayer::getPortDescription() const {
     return std::string(reinterpret_cast<const char*>(tlv.value), tlv.length);
 }
 
-struct ManagementAddress LLDPLayer::getManagementAddress() const {
+struct LLDPLayer::ManagementAddress LLDPLayer::getManagementAddress() const {
     TLV tlv = getTLV(LLDP_TLV_TYPE_MANAGEMENT_ADDRESS);
     if (tlv.length == 0) {
         return {MANAGEMENT_ADDRESS_SUBTYPE_IPV4, "", MANAGEMENT_ADDRESS_INTERFACE_NUMBERING_UNKNOWN, 0};
@@ -199,7 +199,7 @@ struct ManagementAddress LLDPLayer::getManagementAddress() const {
     return {subtype, value, interfaceNumbering, interfaceNumber, oid};
 }
 
-std::vector<struct SystemCapability> LLDPLayer::getSystemCapabilities() const {
+std::vector<struct LLDPLayer::SystemCapability> LLDPLayer::getSystemCapabilities() const {
     // Get the TLV for system capabilities
     TLV tlv = getTLV(LLDP_TLV_TYPE_SYSTEM_CAPABILITIES);
     std::vector<struct SystemCapability> capabilities;

@@ -13,10 +13,6 @@ class STPLayer {
     STPLayer(const uint8_t* data, size_t dataLen);
     ~STPLayer();
 
-  private:
-    const uint8_t* rawData;
-    size_t rawDataLength;
-
     struct RootIdentifier {
         uint16_t priority;
         uint8_t systemIDExtension;
@@ -32,6 +28,12 @@ class STPLayer {
     } __attribute__((packed));
 
     struct BridgeIdentifier getBridgeIdentifier() const;
+
+    STPLayer(const STPLayer&) = delete;
+    
+  private:
+    const uint8_t* rawData;
+    size_t rawDataLength;
 
     struct CBDU {
         uint8_t bpduType;
