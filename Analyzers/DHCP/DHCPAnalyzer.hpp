@@ -2,27 +2,26 @@
 #define DHCP_ANALYZER_HPP
 
 #include "../Analyzer.hpp"
-#include <unordered_set>
-#include <string>
 
 // DHCPAnalyzer class (derived from Analyzer)
 class DHCPAnalyzer : public Analyzer {
 private:
-    // Vector of clients IP addresses
-    std::unordered_set<std::string> clientsIps;
-    // Vector of DHCP server IP addresses
-    std::unordered_set<std::string> dhcpServerIps;
-    // Vector of gateway IP addresses
-    std::unordered_set<std::string> gatewayIps;
-    // Vector of DNS server IP addresses
-    std::unordered_set<std::string> dnsServerIps;
+    std::unordered_set<pcpp::MacAddress, MacAddressHash, MacAddressEqual> clientsMacs;
+    std::unordered_set<pcpp::IPAddress, IPAddressHash, IPAddressEqual> clientsIps;
+    std::unordered_set<pcpp::IPAddress, IPAddressHash, IPAddressEqual> dhcpServerIps;
+    std::unordered_set<pcpp::IPAddress, IPAddressHash, IPAddressEqual> gatewayIps;
+    std::unordered_set<pcpp::IPAddress, IPAddressHash, IPAddressEqual> dnsServerIps;
 
 public:
+    DHCPAnalyzer(HostManager& hostManager) : Analyzer(hostManager) {}
+
     // Method to analyze a packet (overrides the virtual method in Analyzer)
     void analyzePacket(pcpp::Packet& parsedPacket) override;
-
-    // Print captured hosts
-    void printHostMap();
+    std::unordered_set<pcpp::MacAddress, MacAddressHash, MacAddressEqual> getClientsMacs() const { return clientsMacs; }
+    std::unordered_set<pcpp::IPAddress, IPAddressHash, IPAddressEqual> getClientsIps() const { return clientsIps; }
+    std::unordered_set<pcpp::IPAddress, IPAddressHash, IPAddressEqual> getDhcpServerIps() const { return dhcpServerIps; }
+    std::unordered_set<pcpp::IPAddress, IPAddressHash, IPAddressEqual> getGatewayIps() const { return gatewayIps; }
+    std::unordered_set<pcpp::IPAddress, IPAddressHash, IPAddressEqual> getDnsServerIps() const { return dnsServerIps; }
 };
 
 #endif // DHCP_ANALYZER_HPP

@@ -16,6 +16,7 @@
 class LLDPAnalyzer : public Analyzer {
 
 public:
+    LLDPAnalyzer(HostManager& hostManager) : Analyzer(hostManager) {}
     // Method to analyze a packet (overrides the virtual method in Analyzer)
     void analyzePacket(pcpp::Packet& parsedPacket) override;
 };

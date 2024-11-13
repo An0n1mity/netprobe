@@ -30,6 +30,7 @@ enum CDPTlvType {
 
 class CDPAnalyzer : public Analyzer {
 public:
+    CDPAnalyzer(HostManager& hostManager) : Analyzer(hostManager) {}
     void analyzePacket(pcpp::Packet& parsedPacket) override;
     void printHostMap();  // Afficher les informations sur les hôtes CDP
     //std::string convertToIpAddress(const std::string& hexData);

@@ -1,18 +1,17 @@
 #include "DHCPAnalyzer.hpp"
 
 // Helper function to extract option data as a string (IP address or text)
-std::string getDhcpOptionAsString(pcpp::DhcpLayer* dhcpLayer, pcpp::DhcpOptionTypes optionType, const std::string& defaultValue = "Not Assigned") {
+pcpp::IPAddress getDhcpOption(pcpp::DhcpLayer* dhcpLayer, pcpp::DhcpOptionTypes optionType, const std::string& defaultValue = "Not Assigned") {
     pcpp::DhcpOption option = dhcpLayer->getOptionData(optionType);
     if (!option.isNull()) {
         if (option.getType() == pcpp::DhcpOptionTypes::DHCPOPT_DHCP_REQUESTED_ADDRESS || 
             option.getType() == pcpp::DhcpOptionTypes::DHCPOPT_DHCP_SERVER_IDENTIFIER ||
             option.getType() == pcpp::DhcpOptionTypes::DHCPOPT_ROUTERS ||
             option.getType() == pcpp::DhcpOptionTypes::DHCPOPT_DOMAIN_NAME_SERVERS) {
-            return option.getValueAsIpAddr().toString();
+            return option.getValueAsIpAddr();
         }
-        return std::string(reinterpret_cast<const char*>(option.getValue()), option.getDataSize());
     }
-    return defaultValue;
+    return pcpp::IPv4Address::Zero;
 }
 
 void DHCPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
@@ -24,50 +23,38 @@ void DHCPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
     }
 
     // Extract DHCP information using helper function
-    std::string ipAddress = getDhcpOptionAsString(dhcpLayer, pcpp::DHCPOPT_DHCP_REQUESTED_ADDRESS);
-    std::string hostname = getDhcpOptionAsString(dhcpLayer, pcpp::DHCPOPT_HOST_NAME);
-    std::string dhcpServerIp = getDhcpOptionAsString(dhcpLayer, pcpp::DHCPOPT_DHCP_SERVER_IDENTIFIER);
-    std::string gatewayIp = getDhcpOptionAsString(dhcpLayer, pcpp::DHCPOPT_ROUTERS);
-    std::string dnsServerIp = getDhcpOptionAsString(dhcpLayer, pcpp::DHCPOPT_DOMAIN_NAME_SERVERS);
+    pcpp::MacAddress clientMac = dhcpLayer->getClientHardwareAddress();
+    pcpp::IPAddress ipAddress =  getDhcpOption(dhcpLayer, pcpp::DHCPOPT_DHCP_REQUESTED_ADDRESS);
+    pcpp::IPAddress hostname = getDhcpOption(dhcpLayer, pcpp::DHCPOPT_HOST_NAME);
+    pcpp::IPAddress dhcpServerIp = getDhcpOption(dhcpLayer, pcpp::DHCPOPT_DHCP_SERVER_IDENTIFIER);
+    pcpp::IPAddress gatewayIp = getDhcpOption(dhcpLayer, pcpp::DHCPOPT_ROUTERS);
+    pcpp::IPAddress dnsServerIp = getDhcpOption(dhcpLayer, pcpp::DHCPOPT_DOMAIN_NAME_SERVERS);
+    
+    pcpp::RawPacket* rawPacket = parsedPacket.getRawPacket();
+    timespec ts = rawPacket->getPacketTimeStamp();
 
     // Check and add to the appropriate set if the IP is not already present
-    if (ipAddress != "Not Assigned") {
+    if (clientMac != pcpp::MacAddress::Zero) {
+        clientsMacs.insert(clientMac);
+    }
+
+    if (!ipAddress.isZero()) {
         clientsIps.insert(ipAddress);
     }
 
-    if (dhcpServerIp != "Not Assigned") {
+    if (!dhcpServerIp.isZero()) {
         dhcpServerIps.insert(dhcpServerIp);
     }
 
-    if (gatewayIp != "Not Assigned") {
+    if (!gatewayIp.isZero()) { 
         gatewayIps.insert(gatewayIp);
     }
 
-    if (dnsServerIp != "Not Assigned") {
+    if (!dnsServerIp.isZero()) {
         dnsServerIps.insert(dnsServerIp);
     }
-}
 
-// Print captured DHCP clients
-void DHCPAnalyzer::printHostMap() {
-    std::cout << "Captured DHCP Clients:" << std::endl;
-    for (const auto& ip : clientsIps) {
-        std::cout << ip << std::endl;
-    }
-    std::cout << std::endl;
-
-    std::cout << "Captured DHCP Servers:" << std::endl;
-    for (const auto& ip : dhcpServerIps) {
-        std::cout << ip << std::endl;
-    }
-
-    std::cout << "Captured Gateways:" << std::endl;
-    for (const auto& ip : gatewayIps) {
-        std::cout << ip << std::endl;
-    }
-
-    std::cout << "Captured DNS Servers:" << std::endl;
-    for (const auto& ip : dnsServerIps) {
-        std::cout << ip << std::endl;
-    }
+    // Update the host manager with the DHCP data
+    auto dhcpData = std::make_unique<DHCPData>(ts, clientMac, ipAddress, "", dhcpServerIp, gatewayIp, dnsServerIp);
+    hostManager.updateHost(ProtocolType::DHCP, std::move(dhcpData));
 }

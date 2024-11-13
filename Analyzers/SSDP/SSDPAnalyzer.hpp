@@ -21,6 +21,7 @@ private:
     std::map<std::string, std::string> ssdpMap; // Store SSDP details, keyed by USN or Location
 
 public:
+    SSDPAnalyzer(HostManager& hostManager) : Analyzer(hostManager) {}
     // Method to analyze a packet (overrides the virtual method in Analyzer)
     void analyzePacket(pcpp::Packet& parsedPacket) override;
 

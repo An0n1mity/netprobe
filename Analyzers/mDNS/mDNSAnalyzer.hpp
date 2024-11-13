@@ -10,6 +10,7 @@ private:
     std::map<std::string, std::string> hostnameMap;
 
 public:
+    mDNSAnalyzer(HostManager& hostManager) : Analyzer(hostManager) {}
     void analyzePacket(pcpp::Packet& parsedPacket) override;
 };
 

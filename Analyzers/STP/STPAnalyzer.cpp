@@ -22,8 +22,12 @@ void STPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
         return; // Not an STP packet, exit
     }
 
+    pcpp::RawPacket* rawPacket = parsedPacket.getRawPacket();
+    timespec ts = rawPacket->getPacketTimeStamp();
+
     STPLayer stplayer(payload + 6, ethLayer->getLayerPayloadSize() - 6);
-    
-    // Print the STP layer
-    std::cout << stplayer << std::endl;
+
+
+    auto stpData = std::make_unique<STPData>(ts, stplayer);    
+    hostManager.updateHost(ProtocolType::STP, std::move(stpData));
 }

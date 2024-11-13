@@ -9,32 +9,29 @@ void ARPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
     }
 
     // Extract ARP source
-    std::string srcMac = arpLayer->getSenderMacAddress().toString();
-    std::string srcIp = arpLayer->getSenderIpAddr().toString();
+    pcpp::MacAddress srcMac = arpLayer->getSenderMacAddress();
+    pcpp::IPAddress srcIp = arpLayer->getSenderIpAddr();
 
     // Extract ARP destination
-    std::string dstIp = arpLayer->getTargetIpAddr().toString();
+    pcpp::IPAddress dstIp = arpLayer->getTargetIpAddr();
 
-    // Display the extracted information
-    std::cout << "[ARP] Source MAC: " << srcMac << " | Source IP: " << srcIp << std::endl;
+    pcpp::RawPacket* rawPacket = parsedPacket.getRawPacket();
+    timespec ts = rawPacket->getPacketTimeStamp();
 
-    // Add source MAC to IP mapping to hostMap
-    hostMap[srcMac] = srcIp;
-
-    // Add destination IP to destinationIps
-    destinationIps.insert(dstIp);
-}
-
-void ARPAnalyzer::printHostMap() {
-    std::cout << "Captured Hosts:" << std::endl;
-    for (const auto& entry : hostMap) {
-        std::cout << "MAC: " << entry.first << " | IP: " << entry.second << std::endl;
+    // Check and add to the appropriate set if the IP is not already present
+    if (srcMac != pcpp::MacAddress::Zero) {
+        senderMacs.insert(srcMac);
     }
-    std::cout << std::endl;
-
-    std::cout << "Captured Destination IPs:" << std::endl;
-    for (const auto& ip : destinationIps) {
-        std::cout << ip << std::endl;
+    
+    if (!srcIp.isZero()) {
+        senderIPs.insert(srcIp);
     }
-    std::cout << std::endl;
+
+    if (!dstIp.isZero()) {
+        targetIPs.insert(dstIp);
+    }
+
+    // Update the host manager with the ARP data
+    auto arpData = std::make_unique<ARPData>(ts, srcMac, srcIp, dstIp);
+    hostManager.updateHost(ProtocolType::ARP, std::move(arpData));
 }
