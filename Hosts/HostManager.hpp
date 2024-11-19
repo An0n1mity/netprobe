@@ -36,14 +36,17 @@ class HostManager {
 public:
     // Add or update a host with information from a specific protocol
     void updateHost(ProtocolType protocol, std::unique_ptr<ProtocolData> data);
-    // Convert protocol data to JSON
-    Json::Value protocolDataToJson(const ProtocolData& data);
+    // Update a host in the hostsJson array
+    void updateHostJson(const Host& host);
+    // Update report file with hosts information
+    void dumpHostsToFile(const std::string& filename);
     // Print the host map	
     void printHostMap();
     // Get the host map
     const std::unordered_map<pcpp::MacAddress, Host, MacAddressHash, MacAddressEqual>& getHostMap() const;
 private:
     std::unordered_map<pcpp::MacAddress, Host, MacAddressHash, MacAddressEqual> hostMap;
+    Json::Value hostsJson;
     // Unknown mac address counter
     int unknownMacCounter = 0;
 };

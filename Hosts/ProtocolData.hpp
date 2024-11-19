@@ -46,6 +46,18 @@ struct DHCPData : public ProtocolData {
           hostname(host), dhcpServerIp(dhcpServer), gatewayIp(gateway), dnsServerIp(dns) {}
 };
 
+// Data structure for mDNS protocol
+struct mDNSData : public ProtocolData {
+    std::string queriedDomain;
+    pcpp::MacAddress clientMac;
+    std::string hostname;
+    pcpp::IPAddress ipAddress;
+
+    // Constructor
+    mDNSData(timespec ts, const std::string& domain, pcpp::MacAddress mac, const std::string& host, pcpp::IPAddress ip)
+        : ProtocolData(ProtocolType::MDNS, ts), queriedDomain(domain), clientMac(mac), hostname(host), ipAddress(ip) { }
+};
+
 // Data structure for ARP protocol
 struct ARPData : public ProtocolData {
     pcpp::MacAddress senderMac;
@@ -59,14 +71,16 @@ struct ARPData : public ProtocolData {
 
 // Data structure for STP protocol
 struct STPData : public ProtocolData {
+    pcpp::MacAddress senderMAC;
     STPLayer::RootIdentifier rootIdentifier;
     STPLayer::BridgeIdentifier bridgeIdentifier;
 
     // Modified constructor to take an STPLayer object directly
-    STPData(timespec ts, const STPLayer& stpLayer)
+    STPData(timespec ts, pcpp::MacAddress mac, STPLayer::RootIdentifier rootId, STPLayer::BridgeIdentifier bridgeId)
         : ProtocolData(ProtocolType::STP, ts),
-          rootIdentifier(stpLayer.getRootIdentifier()),  // Initialize from STPLayer
-          bridgeIdentifier(stpLayer.getBridgeIdentifier()) {}  // Initialize from STPLayer
+            senderMAC(mac),  // Initialize from parameter
+            rootIdentifier(rootId),  // Initialize from parameter
+            bridgeIdentifier(bridgeId) {}  // Initialize from parameter
 };
 
 struct ProtocolDataComparator {
@@ -86,10 +100,25 @@ struct ProtocolDataComparator {
                    lhsData->dhcpServerIp != rhsData->dhcpServerIp || lhsData->gatewayIp != rhsData->gatewayIp || lhsData->dnsServerIp != rhsData->dnsServerIp;
         }
 
+        if (lhs->getProtocolType() == ProtocolType::MDNS) {
+            const mDNSData* lhsData = static_cast<const mDNSData*>(lhs.get());
+            const mDNSData* rhsData = static_cast<const mDNSData*>(rhs.get());
+            return lhsData->queriedDomain != rhsData->queriedDomain || lhsData->clientMac != rhsData->clientMac || lhsData->hostname != rhsData->hostname || lhsData->ipAddress != rhsData->ipAddress;
+        }
+
         if (lhs->getProtocolType() == ProtocolType::ARP) {
             const ARPData* lhsData = static_cast<const ARPData*>(lhs.get());
             const ARPData* rhsData = static_cast<const ARPData*>(rhs.get());
             return lhsData->senderMac != rhsData->senderMac || lhsData->senderIp != rhsData->senderIp || lhsData->targetIp != rhsData->targetIp;
+        }
+
+        if (lhs->getProtocolType() == ProtocolType::STP) {
+            const STPData* lhsData = static_cast<const STPData*>(lhs.get());
+            const STPData* rhsData = static_cast<const STPData*>(rhs.get());
+            return lhsData->senderMAC != rhsData->senderMAC || lhsData->rootIdentifier.priority != rhsData->rootIdentifier.priority ||
+                   lhsData->rootIdentifier.systemIDExtension != rhsData->rootIdentifier.systemIDExtension || lhsData->rootIdentifier.systemID != rhsData->rootIdentifier.systemID ||
+                   lhsData->bridgeIdentifier.priority != rhsData->bridgeIdentifier.priority || lhsData->bridgeIdentifier.systemIDExtension != rhsData->bridgeIdentifier.systemIDExtension ||
+                   lhsData->bridgeIdentifier.systemID != rhsData->bridgeIdentifier.systemID;
         }
 
         return false; // Fallback case
