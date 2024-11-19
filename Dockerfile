@@ -1,7 +1,7 @@
-# Utiliser Alpine comme image de base
-FROM alpine:latest
+# Stage 1: Build Stage
+FROM alpine:latest AS build
 
-# Installer les dépendances de base
+# Install build dependencies
 RUN apk add --no-cache \
     g++ \
     cmake \
@@ -11,15 +11,16 @@ RUN apk add --no-cache \
     git \
     wget \
     curl \
-    jsoncpp-dev
+    jsoncpp-dev \
+    boost-dev
 
-# Installer glibc
+# Install glibc
 RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
     && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.35-r1/glibc-2.35-r1.apk \
     && apk add --no-cache --allow-untrusted glibc-2.35-r1.apk \
     && rm glibc-2.35-r1.apk
 
-# Installer PcapPlusPlus
+# Install PcapPlusPlus
 RUN wget https://github.com/seladb/PcapPlusPlus/archive/v24.09.tar.gz \
     && tar -xf v24.09.tar.gz \
     && rm v24.09.tar.gz \
@@ -28,24 +29,46 @@ RUN wget https://github.com/seladb/PcapPlusPlus/archive/v24.09.tar.gz \
     && cmake --build build \
     && cmake --install build --prefix /usr/local
 
-# Définir le répertoire de travail
+# Define the working directory
 WORKDIR /cartographie-passive
 
-# Copier les fichiers du projet dans le conteneur
+# Copy the project files into the container
 COPY Analyzers /cartographie-passive/Analyzers
 COPY Layers /cartographie-passive/Layers
 COPY Hosts /cartographie-passive/Hosts
 COPY CaptureManager.hpp /cartographie-passive/CaptureManager.hpp
 COPY main.cpp /cartographie-passive/main.cpp
-
 COPY CMakeLists.txt /cartographie-passive/CMakeLists.txt
 COPY FindPCAP.cmake /cartographie-passive/FindPCAP.cmake
 
-# Construire l'application
+# Build the application
 RUN mkdir build \
     && cd build \
     && cmake -DCMAKE_PREFIX_PATH=/usr/local .. \
     && cmake --build .
 
-# Lancer l'application
+# Stage 2: Runtime Stage
+FROM alpine:latest
+
+# Install runtime dependencies
+RUN apk add --no-cache \
+    libpcap \
+    jsoncpp \
+    boost-system \
+    boost-thread
+
+# Install glibc
+RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub \
+    && wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.35-r1/glibc-2.35-r1.apk \
+    && apk add --no-cache --allow-untrusted glibc-2.35-r1.apk \
+    && rm glibc-2.35-r1.apk
+
+# Copy the built application from the build stage
+COPY --from=build /cartographie-passive/Hosts/manuf /cartographie-passive/build/manuf
+COPY --from=build /cartographie-passive/build /cartographie-passive/build
+
+# Define the working directory
+WORKDIR /cartographie-passive
+
+# Run the application
 CMD ["./build/cartographie-passive"]

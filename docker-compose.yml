@@ -5,10 +5,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    network_mode: "host" # Allows the container to access the host's network
+    network_mode: "host"
     cap_add:
-      - NET_RAW      # Allows the container to capture raw packets
-      - NET_ADMIN    # Grants additional network-related privileges
+      - NET_RAW
+      - NET_ADMIN
     volumes:
       - /etc/localtime:/etc/localtime:ro
     environment:
