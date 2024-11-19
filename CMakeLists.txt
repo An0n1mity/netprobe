@@ -5,6 +5,7 @@ include(FindPCAP.cmake)
 
 find_package(PkgConfig REQUIRED)
 find_package(PcapPlusPlus REQUIRED)
+find_package(Boost REQUIRED)
 pkg_check_modules(JSONCPP jsoncpp)
 link_libraries(${JSONCPP_LIBRARIES})
 
@@ -29,4 +30,4 @@ file(GLOB_RECURSE sources
 
 add_executable(cartographie-passive ${sources})
 
-target_link_libraries(cartographie-passive ${PCAP_LIBRARY} ${JSONCPP_LIBRARIES} Pcap++ Packet++ Common++ pcap pthread)
+target_link_libraries(cartographie-passive ${PCAP_LIBRARY} ${JSONCPP_LIBRARIES} Pcap++ Packet++ Common++ pcap pthread ${Boost_LIBRARIES})
