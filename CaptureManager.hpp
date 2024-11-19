@@ -16,6 +16,10 @@ public:
         }
     }
 
+    // Destructor
+    ~CaptureManager() {
+    }
+
     // Add an analyzer to the list
     void addAnalyzer(Analyzer* analyzer) {
         analyzers.push_back(analyzer);

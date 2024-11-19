@@ -4,17 +4,22 @@
 #include <thread>
 #include <chrono>
 #include <cstdlib>
-#include <csignal>
+#include <boost/asio.hpp>
+#include <boost/asio/signal_set.hpp>
 #include <atomic>
 #include "CaptureManager.hpp"
 #include "Analyzers/DHCP/DHCPAnalyzer.hpp"
+#include "Analyzers/mDNS/mDNSAnalyzer.hpp"
 #include "Analyzers/ARP/ARPAnalyzer.hpp"
 #include "Analyzers/STP/STPAnalyzer.hpp"
 #include "Hosts/HostManager.hpp"
+#include <atomic> // For atomic flag
 
 int main() {
+    loadVendorDatabase("./build/manuf", vendorDatabase);
+
     // Get the network interface from environment variable
-    const char* interfaceEnv = "any"; //std::getenv("INTERFACE");
+    const char* interfaceEnv = "eth0";
     if (!interfaceEnv) {
         std::cerr << "Error: INTERFACE environment variable is not set." << std::endl;
         return 1;
@@ -22,7 +27,7 @@ int main() {
     std::string interface = interfaceEnv;
 
     // Get the timeout duration from environment variable
-    const char* durationEnv = "-1"; //std::getenv("TIMEOUT");
+    const char* durationEnv = "-1";
     if (!durationEnv) {
         std::cerr << "Error: TIMEOUT environment variable is not set." << std::endl;
         return 1;
@@ -36,11 +41,24 @@ int main() {
     // Create the host manager
     HostManager hostManager;
 
+    boost::asio::io_context io_context;
+    boost::asio::signal_set signals(io_context, SIGUSR1);
+    signals.async_wait([&hostManager](const boost::system::error_code& error, int signum) {
+        if (!error) {
+            std::cout << "Signal (" << signum << ") received, dumping hosts file..." << std::endl;
+            hostManager.dumpHostsToFile("hosts.json");
+        }
+    });
+
+    // Start the IO context in a separate thread
+    std::thread io_thread([&io_context]() { io_context.run(); });
+
     // Create the capture manager
     CaptureManager captureManager(interface);
 
     // Create analyzers
     DHCPAnalyzer dhcpAnalyzer(hostManager);
+    mDNSAnalyzer mdnsAnalyzer(hostManager);
     ARPAnalyzer arpAnalyzer(hostManager);
     STPAnalyzer stpAnalyzer(hostManager);
 
@@ -52,16 +70,21 @@ int main() {
     // Start capturing packets
     std::cout << "Starting packet capture on interface: " << interface << std::endl;
 
+    std::atomic<bool> running(true); // Atomic flag for the infinite loop
     try {
         captureManager.startCapture();
 
         if (isInfinite) {
-            // Infinite capture loop
             std::cout << "Capturing packets indefinitely. Press Ctrl+C to stop." << std::endl;
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+
+            // Infinite loop controlled by the atomic flag
+            while (running) {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
         } else {
-            // Finite capture
             std::cout << "Capturing packets for " << duration << " seconds" << std::endl;
+
+            // Finite loop for the given duration
             for (int i = 0; i < duration; i++) {
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
@@ -69,6 +92,13 @@ int main() {
     } catch (const std::exception& e) {
         std::cerr << "Exception occurred during capture: " << e.what() << std::endl;
     }
+
+    // Stop the infinite loop when a signal (e.g., SIGINT) is received
+    signals.async_wait([&running](const boost::system::error_code& error, int) {
+        if (!error) {
+            running = false; // Break the loop
+        }
+    });
 
     // Attempt to stop the capture gracefully
     try {
@@ -81,7 +111,11 @@ int main() {
 
     // Print the host map
     hostManager.printHostMap();
+    hostManager.dumpHostsToFile("hosts.json");
 
     std::cout << "Program terminated." << std::endl;
+
+    io_thread.join();
     return 0;
 }
+
