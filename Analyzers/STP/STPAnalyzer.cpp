@@ -26,8 +26,17 @@ void STPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
     timespec ts = rawPacket->getPacketTimeStamp();
 
     STPLayer stplayer(payload + 6, ethLayer->getLayerPayloadSize() - 6);
+    STPLayer::BridgeIdentifier bridgeIdentifier = stplayer.getBridgeIdentifier();
+    STPLayer::RootIdentifier rootIdentifier = stplayer.getRootIdentifier();
 
+    std::string ethLayerStr = ethLayer->toString();
+    std::string srcPrefix = "Src: ";
+    size_t srcPos = ethLayerStr.find(srcPrefix);
+    size_t macStartPos = srcPos + srcPrefix.length();
+    std::string srcMacStr = ethLayerStr.substr(macStartPos, 17);
 
-    auto stpData = std::make_unique<STPData>(ts, stplayer);    
+    pcpp::MacAddress srcMac(srcMacStr);
+
+    auto stpData = std::make_unique<STPData>(ts, srcMac, rootIdentifier, bridgeIdentifier);
     hostManager.updateHost(ProtocolType::STP, std::move(stpData));
 }

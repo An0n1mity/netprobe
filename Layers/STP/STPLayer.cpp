@@ -13,6 +13,16 @@ uint32_t reverseBytes32(uint32_t value) {
            ((value << 24) & 0xFF000000);
 }
 
+uint64_t reverseBytes48(uint64_t value) {
+    // Reverse only the lower 6 bytes (48 bits)
+    return ((value >> 40) & 0x00000000000000FF) |
+           ((value >> 24) & 0x000000000000FF00) |
+           ((value >> 8)  & 0x0000000000FF0000) |
+           ((value << 8)  & 0x00000000FF000000) |
+           ((value << 24) & 0x000000FF00000000) |
+           ((value << 40) & 0x00FF000000000000);
+}
+
 // Helper function to reverse byte order for 64-bit values
 uint64_t reverseBytes64(uint64_t value) {
     return ((value >> 56) & 0x00000000000000FF) |
@@ -95,6 +105,8 @@ struct STPLayer::RootIdentifier STPLayer::getRootIdentifier() const {
     struct RootIdentifier rootIdentifier;
     std::copy(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&cbdu.RootIdentifier)), const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&cbdu.RootIdentifier)) + 8, reinterpret_cast<uint8_t*>(&rootIdentifier));
     rootIdentifier.systemIDExtension = rootIdentifier.priority >> 8;
+    rootIdentifier.priority = rootIdentifier.priority & 0x00FF;
+    rootIdentifier.systemID = (rootIdentifier.systemID << 8 | rootIdentifier.systemIDExtension);
     return rootIdentifier;
 }
 
@@ -109,7 +121,35 @@ struct STPLayer::BridgeIdentifier STPLayer::getBridgeIdentifier() const {
     struct BridgeIdentifier bridgeIdentifier;
     std::copy(const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&cbdu.BridgeIdentifier)), const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(&cbdu.BridgeIdentifier)) + 8, reinterpret_cast<uint8_t*>(&bridgeIdentifier));
     bridgeIdentifier.systemIDExtension = bridgeIdentifier.priority >> 8;
+    bridgeIdentifier.priority = bridgeIdentifier.priority & 0x00FF;
+    bridgeIdentifier.systemID = (bridgeIdentifier.systemID << 8 | bridgeIdentifier.systemIDExtension) & 0x00FFFFFFFFFFFF;
     return bridgeIdentifier;
+}
+
+// Get the root bridge system ID
+/**
+ * @brief Gets the root bridge system ID from the STPDU.
+ *
+ * @return The root bridge system ID.
+ */
+
+pcpp::MacAddress STPLayer::getRootBridgeSystemID() const {
+    struct RootIdentifier rootIdentifier = getRootIdentifier();
+    uint64_t reversedSystemID = reverseBytes64(rootIdentifier.systemID);
+    return pcpp::MacAddress(reinterpret_cast<uint8_t*>(&reversedSystemID));
+}
+
+// Get the local bridge system ID
+/**
+ * @brief Gets the local bridge system ID from the STPDU.
+ *
+ * @return The local bridge system ID.
+ */
+
+pcpp::MacAddress STPLayer::getLocalBridgeSystemID() const {
+    struct BridgeIdentifier bridgeIdentifier = getBridgeIdentifier();
+    uint64_t reversedSystemID = reverseBytes64(bridgeIdentifier.systemID);
+    return pcpp::MacAddress(reinterpret_cast<uint8_t*>(&reversedSystemID));
 }
 
 // Overloaded stream insertion operator for STPLayer

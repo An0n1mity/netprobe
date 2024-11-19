@@ -1,12 +1,23 @@
 #ifndef STP_LAYER_HPP
 #define STP_LAYER_HPP
 
+#include "MacAddress.h"
+
 #include <cstdint>
 #include <cstddef> 
 #include <stdexcept>
 #include <iostream> 
 #include <iomanip>
 #include <algorithm>
+
+// Helper function to reverse byte order for 16-bit values
+uint16_t reverseBytes16(uint16_t value);
+// Helper function to reverse byte order for 32-bit values
+uint32_t reverseBytes32(uint32_t value) ;
+uint64_t reverseBytes48(uint64_t value);
+
+// Helper function to reverse byte order for 64-bit values
+uint64_t reverseBytes64(uint64_t value);
 
 class STPLayer {
   public: 
@@ -28,6 +39,9 @@ class STPLayer {
     } __attribute__((packed));
 
     struct BridgeIdentifier getBridgeIdentifier() const;
+
+    pcpp::MacAddress getRootBridgeSystemID() const;
+    pcpp::MacAddress getLocalBridgeSystemID() const;
 
     STPLayer(const STPLayer&) = delete;
     
