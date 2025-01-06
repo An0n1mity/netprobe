@@ -15,6 +15,21 @@
 #include "Hosts/HostManager.hpp"
 #include <atomic> // For atomic flag
 
+void rearm_sigusr1(boost::asio::signal_set& signals, std::atomic<bool>& dumpHosts) {
+    // Asynchronously wait for SIGUSR1 signal
+    signals.async_wait([&signals, &dumpHosts](const boost::system::error_code& error, int signum) {
+        if (!error && signum == SIGUSR1) {
+            std::cout << "Signal (" << signum << ") received, dumping hosts file..." << std::endl;
+            dumpHosts = true;
+
+            // Rearm the handler for future signals
+            rearm_sigusr1(signals, dumpHosts);
+        } else if (error) {
+            std::cerr << "Error handling signal: " << error.message() << std::endl;
+        }
+    });
+}
+
 int main() {
     loadVendorDatabase("./build/manuf", vendorDatabase);
 
@@ -26,6 +41,10 @@ int main() {
     }
     std::string interface = interfaceEnv;
 
+
+    std::atomic<bool> running(true); // Atomic flag for the infinite loop
+    // Atomic flag for the infinite loop to dump hosts
+    std::atomic<bool> dumpHosts(false);
     // Get the timeout duration from environment variable
     const char* durationEnv = "-1";
     if (!durationEnv) {
@@ -38,20 +57,27 @@ int main() {
     // Convert duration to integer if not infinite
     int duration = isInfinite ? 0 : std::stoi(durationStr);
 
-    // Create the host manager
-    HostManager hostManager;
-
     boost::asio::io_context io_context;
-    boost::asio::signal_set signals(io_context, SIGUSR1);
-    signals.async_wait([&hostManager](const boost::system::error_code& error, int signum) {
-        if (!error) {
-            std::cout << "Signal (" << signum << ") received, dumping hosts file..." << std::endl;
-            hostManager.dumpHostsToFile("hosts.json");
+    boost::asio::signal_set signals(io_context, SIGUSR1, SIGINT, SIGTERM);
+
+    // Stop the infinite loop when a signal (e.g., SIGINT) is received
+    signals.async_wait([&running](const boost::system::error_code& error, int signum) {
+        if (!error && signum == SIGINT) {
+            std::cout << "Signal (" << signum << ") received, stopping packet capture..." << std::endl;
+            running = false; // Break the loop
         }
     });
 
+    // Rearm the handler for SIGUSR1 signal
+    rearm_sigusr1(signals, dumpHosts);
+
+    // Create the host manager
+    HostManager hostManager;
+
     // Start the IO context in a separate thread
     std::thread io_thread([&io_context]() { io_context.run(); });
+    // print the pid of the process
+    std::cout << "PID: " << getpid() << std::endl;
 
     // Create the capture manager
     CaptureManager captureManager(interface);
@@ -70,7 +96,6 @@ int main() {
     // Start capturing packets
     std::cout << "Starting packet capture on interface: " << interface << std::endl;
 
-    std::atomic<bool> running(true); // Atomic flag for the infinite loop
     try {
         captureManager.startCapture();
 
@@ -79,6 +104,11 @@ int main() {
 
             // Infinite loop controlled by the atomic flag
             while (running) {
+                // Dump hosts to file if the atomic flag is set
+                if (dumpHosts) {
+                    hostManager.dumpHostsToFile("hosts.json");
+                    dumpHosts = false;
+                }
                 std::this_thread::sleep_for(std::chrono::seconds(1));
             }
         } else {
@@ -93,16 +123,8 @@ int main() {
         std::cerr << "Exception occurred during capture: " << e.what() << std::endl;
     }
 
-    // Stop the infinite loop when a signal (e.g., SIGINT) is received
-    signals.async_wait([&running](const boost::system::error_code& error, int) {
-        if (!error) {
-            running = false; // Break the loop
-        }
-    });
-
     // Attempt to stop the capture gracefully
     try {
-        std::cout << "Stopping packet capture..." << std::endl;
         captureManager.stopCapture();
         std::cout << "Packet capture stopped." << std::endl;
     } catch (const std::exception& e) {
