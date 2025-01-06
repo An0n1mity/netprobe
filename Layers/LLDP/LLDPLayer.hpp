@@ -10,6 +10,17 @@
 #include <iomanip>
 
 // Class representing LLDP Layer
+/**
+ * @class LLDPLayer
+ * 
+ * @brief Represents an LLDP layer in a network packet.
+ * 
+ * The LLDPLayer class provides methods for accessing and parsing LLDP data from a network packet.
+ * It extracts information such as the chassis ID, port ID, TTL, port description, system name,
+ * system description, system capabilities, and management address from the LLDP packet.
+ * 
+ * The LLDPLayer class also provides an overloaded operator for outputting LLDP layer information.
+ */
 class LLDPLayer {
 public:
     // Constructor and Destructor

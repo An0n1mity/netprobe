@@ -31,12 +31,19 @@
  * Derived classes must implement the analyzePacket method to handle the analysis
  * of packets for different protocols.
  */
+
+virtual void analyzePacket(pcpp::Packet& packet) = 0;
 class Analyzer {
 public:
     Analyzer(HostManager& hostManager) : hostManager(hostManager) {}
-    // Virtual destructor
     virtual ~Analyzer() {}
-    // Virtual method to analyze specific protocol packets, to be implemented by derived classes
+    /**
+    * @brief Analyzes a given packet.
+    * 
+    * This is a pure virtual function that must be implemented by derived classes.
+    * 
+    * @param packet Reference to a pcpp::Packet object to be analyzed.
+    */
     virtual void analyzePacket(pcpp::Packet& packet) = 0;
 protected:
     // Host manager reference

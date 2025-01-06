@@ -3,6 +3,11 @@
 
 #include "Host.hpp"
 
+/**
+ * @class MacAddressHash
+ * 
+ * @brief Custom hash function for pcpp::MacAddress.
+ */
 struct MacAddressHash {
     std::size_t operator()(const pcpp::MacAddress& mac) const {
         // Example hash implementation based on the byte array representation of the MAC address
@@ -10,13 +15,22 @@ struct MacAddressHash {
     }
 };
 
-// Custom equality function for pcpp::MacAddress
+/**
+ * @class MacAddressEqual
+ * 
+ * @brief Custom equality function for pcpp::MacAddress.
+ */
 struct MacAddressEqual {
     bool operator()(const pcpp::MacAddress& lhs, const pcpp::MacAddress& rhs) const {
         return lhs == rhs; // Assuming operator== is defined for pcpp::MacAddress
     }
 };
 
+/**
+ * @class IPAddressHash
+ * 
+ * @brief Custom hash function for pcpp::IPAddress.
+ */
 struct IPAddressHash {
     std::size_t operator()(const pcpp::IPAddress& ip) const {
         // Example hash implementation based on the byte array representation of the IP address
@@ -24,7 +38,11 @@ struct IPAddressHash {
     }
 };
 
-// Custom equality function for pcpp::IPAddress
+/**
+ * @class IPAddressEqual
+ * 
+ * @brief Custom equality function for pcpp::IPAddress.
+ */
 struct IPAddressEqual {
     bool operator()(const pcpp::IPAddress& lhs, const pcpp::IPAddress& rhs) const {
         return lhs == rhs; // Assuming operator== is defined for pcpp::IPAddress
@@ -32,6 +50,15 @@ struct IPAddressEqual {
 };
 
 
+/**
+ * @class HostManager
+ * @brief Manages hosts and their information.
+ * 
+ * The HostManager class is responsible for managing hosts, updating their information,
+ * and maintaining a JSON representation of the hosts. It provides methods to update
+ * hosts with protocol-specific data, update the JSON representation, dump host information
+ * to a file, print the host map, and retrieve the host map.
+ */
 class HostManager {
 public:
     // Add or update a host with information from a specific protocol

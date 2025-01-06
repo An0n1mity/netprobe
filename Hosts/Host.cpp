@@ -15,10 +15,12 @@ void Host::updateProtocolData(ProtocolType protocol, std::unique_ptr<ProtocolDat
     auto& protocolSet = protocols_data[static_cast<size_t>(protocol)];
     auto it = protocolSet.find(data);
 
+    // Check if the entry already exists
     if (it != protocolSet.end()) {
         // Update the timestamp if the entry already exists
         (*it)->timestamp = data->timestamp;
-        protocolSet.insert(std::move(data));
+        // Insert the new entry
+        //protocolSet.insert(std::move(data));
 
     } else {
         // Insert the new entry
@@ -42,6 +44,21 @@ void Host::editProtocolData(ProtocolType protocol, std::unique_ptr<ProtocolData>
 }
 
 // Function to load vendor information from a file into the map
+/**
+ * @file Host.cpp
+ * @brief Implementation of functions related to loading vendor database.
+ */
+
+/**
+ * @brief Loads a vendor database from a file into a map.
+ *
+ * This function reads a file containing MAC address prefixes and their corresponding vendor names,
+ * and populates the provided map with this data. Each line in the file should contain a MAC address
+ * prefix followed by the vendor name.
+ *
+ * @param filename The path to the file containing the vendor database.
+ * @param vendorDatabase A reference to a map where the MAC address prefixes and vendor names will be stored.
+ */
 void loadVendorDatabase(const std::string& filename, std::map<std::string, std::string>& vendorDatabase) {
     std::ifstream file(filename);
     if (!file.is_open()) {

@@ -1,11 +1,22 @@
 #include "HostManager.hpp"
 
+/**
+ * @brief Updates the JSON representation of a host in the hostsJson array.
+ *
+ * This function searches for a host in the hostsJson array by comparing the MAC address.
+ * If the host is found, it updates the existing JSON entry with the new host data.
+ * If the host is not found, it appends a new JSON entry for the host.
+ *
+ * @param host The Host object containing the updated host information.
+ */
 void HostManager::updateHostJson(const Host& host) {
+    // Try to find the host in the JSON array
     for (Json::ArrayIndex i = 0; i < hostsJson.size(); ++i) {
         // use boost::split to split the string into a vector of strings
         std::vector<std::string> mac_address;
         boost::split(mac_address, hostsJson[i]["MAC"].asString(), boost::is_any_of(" "));
        
+        // Check if the MAC address matches
         if (mac_address[0] ==  boost::to_upper_copy(host.getMACAddress().toString())) {
             // Replace the existing entry with the updated host
             hostsJson[i] = host.toJson();
@@ -17,6 +28,17 @@ void HostManager::updateHostJson(const Host& host) {
     hostsJson.append(host.toJson());
 }
 
+/**
+ * @brief Updates the host information based on the provided protocol data.
+ *
+ * This function updates the host information in the hostMap based on the protocol type and data provided.
+ * It handles three types of protocols: ARP, DHCP, and STP. For each protocol, it checks if the host already
+ * exists in the hostMap. If it does, it updates the existing host's information. If it doesn't, it creates
+ * a new host entry and updates the hostsJson.
+ *
+ * @param protocol The protocol type (ARP, DHCP, STP).
+ * @param data A unique pointer to the protocol data.
+ */
 void HostManager::updateHost(ProtocolType protocol, std::unique_ptr<ProtocolData> data) {
     timespec first_seen, last_seen;
     switch (protocol) {
@@ -117,6 +139,15 @@ void HostManager::updateHost(ProtocolType protocol, std::unique_ptr<ProtocolData
     }
 }
 
+/**
+ * @brief Dumps the hosts information to a specified file in JSON format.
+ *
+ * This function opens the specified file and writes the hosts information
+ * in JSON format to it. If the file cannot be opened, an error message
+ * is printed to the standard error output.
+ *
+ * @param filename The name of the file to which the hosts information will be written.
+ */
 void HostManager::dumpHostsToFile(const std::string& filename) {
     std::ofstream file(filename);
     if (!file.is_open()) {

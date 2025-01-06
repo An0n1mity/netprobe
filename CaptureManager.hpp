@@ -1,6 +1,14 @@
 #include "Analyzers/Analyzer.hpp"
 
 // CaptureManager class
+/**
+ * @class CaptureManager
+ * @brief Manages packet capture and distribution to analyzers.
+ * 
+ * The CaptureManager class is responsible for managing packet capture on a network interface
+ * and distributing captured packets to a list of analyzers. It provides methods to start and
+ * stop packet capture, add analyzers to the list, and handle packet distribution to the analyzers.
+ */
 class CaptureManager {
 private:
     pcpp::PcapLiveDevice *device;

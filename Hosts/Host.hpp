@@ -22,6 +22,16 @@ std::string pcppMACAddressToString(const pcpp::MacAddress& mac, const std::map<s
 
 extern std::map<std::string, std::string> vendorDatabase;
 
+/**
+ * @class Host
+ * 
+ * @brief Represents a network host.
+ * 
+ * The Host class represents a network host with a MAC address, IP address, hostname, and protocol data.
+ * It provides methods to update and retrieve host information, as well as to convert host data to JSON format.
+ * 
+ * The Host class also provides methods to update and retrieve protocol-specific data for a host.
+ */
 class Host {
   public:
     Host() : mac_address(pcpp::MacAddress::Zero), ip_address(pcpp::IPv4Address::Zero), host_name("") {}

@@ -19,6 +19,17 @@ uint64_t reverseBytes48(uint64_t value);
 // Helper function to reverse byte order for 64-bit values
 uint64_t reverseBytes64(uint64_t value);
 
+// STP Layer class
+/**
+ * @class STPLayer
+ * 
+ * @brief Represents an STP layer in a network packet.
+ * 
+ * The STPLayer class provides methods for accessing and parsing STP data from a network packet.
+ * It extracts information such as the Root Identifier, Bridge Identifier, and system ID from the STP packet.
+ * 
+ * The STPLayer class also provides an overloaded operator for outputting STP layer information.
+ */
 class STPLayer {
   public: 
     STPLayer(const uint8_t* data, size_t dataLen);

@@ -19,6 +19,17 @@ enum class ProtocolType {
 };
 
 // Base class for protocol data
+/**
+ * @class ProtocolData
+ * @brief Base class for protocol-specific data.
+ * 
+ * The ProtocolData class is a base class for protocol-specific data structures.
+ * It provides a common interface for accessing protocol data and a virtual
+ * method to retrieve the protocol type.
+ * 
+ * Derived classes must implement the getProtocolType method to return the
+ * specific protocol type.
+ */
 struct ProtocolData {
     ProtocolType protocol;
     timespec timestamp;
@@ -31,6 +42,14 @@ struct ProtocolData {
 };
 
 // Data structure for DHCP protocol
+/**
+ * @struct DHCPData
+ * @brief Data structure for DHCP protocol.
+ * 
+ * The DHCPData struct is a data structure for storing DHCP protocol data.
+ * It contains fields for the client MAC address, client IP address, hostname,
+ * DHCP server IP address, gateway IP address, and DNS server IP address.
+ */
 struct DHCPData : public ProtocolData {
     pcpp::MacAddress clientMac;
     pcpp::IPAddress ipAddress;
@@ -47,6 +66,14 @@ struct DHCPData : public ProtocolData {
 };
 
 // Data structure for mDNS protocol
+/**
+ * @struct mDNSData
+ * @brief Data structure for mDNS protocol.
+ * 
+ * The mDNSData struct is a data structure for storing mDNS protocol data.
+ * It contains fields for the queried domain, client MAC address, hostname,
+ * and IP address.
+ */
 struct mDNSData : public ProtocolData {
     std::string queriedDomain;
     pcpp::MacAddress clientMac;
@@ -59,6 +86,13 @@ struct mDNSData : public ProtocolData {
 };
 
 // Data structure for ARP protocol
+/**
+ * @struct ARPData
+ * @brief Data structure for ARP protocol.
+ * 
+ * The ARPData struct is a data structure for storing ARP protocol data.
+ * It contains fields for the sender MAC address, sender IP address, and target IP address.
+ */
 struct ARPData : public ProtocolData {
     pcpp::MacAddress senderMac;
     pcpp::IPAddress senderIp;
@@ -70,6 +104,13 @@ struct ARPData : public ProtocolData {
 };
 
 // Data structure for STP protocol
+/**
+ * @struct STPData
+ * @brief Data structure for STP protocol.
+ * 
+ * The STPData struct is a data structure for storing STP protocol data.
+ * It contains fields for the sender MAC address, root identifier, and bridge identifier.
+ */
 struct STPData : public ProtocolData {
     pcpp::MacAddress senderMAC;
     STPLayer::RootIdentifier rootIdentifier;
@@ -83,6 +124,18 @@ struct STPData : public ProtocolData {
             bridgeIdentifier(bridgeId) {}  // Initialize from parameter
 };
 
+/**
+ * @struct ProtocolDataComparator
+ * @brief Comparator for protocol data.
+ * 
+ * The ProtocolDataComparator struct provides a comparison function for protocol data.
+ * It compares two unique pointers to ProtocolData objects based on the protocol type
+ * and specific protocol data fields.
+ * 
+ * This comparator is used to compare protocol data objects in a set to ensure uniqueness.
+ * It is used in the HostManager class to maintain a set of unique protocol data objects.
+ * 
+ */
 struct ProtocolDataComparator {
     bool operator()(const std::unique_ptr<ProtocolData>& lhs, const std::unique_ptr<ProtocolData>& rhs) const {
         if (!lhs || !rhs) return false;
