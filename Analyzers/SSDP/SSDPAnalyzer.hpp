@@ -2,6 +2,7 @@
 #define SSDP_ANALYZER_HPP
 
 #include "../Analyzer.hpp"
+#include "../../Layers/SSDP/SSDPLayer.hpp"
 #include <string>
 #include <map>
 

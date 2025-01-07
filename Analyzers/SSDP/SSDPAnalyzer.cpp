@@ -53,60 +53,24 @@ void SSDPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
         return; // No payload found, exit the function
     }
 
-    // Convert payload to a string (SSDP messages are textual HTTP-like requests)
-    std::string ssdpPayload(reinterpret_cast<const char*>(payload), payloadSize);
+    SSDPLayer ssdpLayer(payload, payloadSize);
+    //std::cout << ssdpLayer << std::endl;
 
-    // Debug output to check if the payload is being captured correctly (show entire payload in 'http' form)
-    //std::cout << "Captured SSDP payload: " << std::endl << ssdpPayload << std::endl;
-
-    // Parse SSDP headers
-    std::map<std::string, std::string> headers = parseSsdpHeaders(ssdpPayload);
-
-    // Check if the message is a NOTIFY or M-SEARCH message (for SSDP)
-    bool isNotify = ssdpPayload.find("NOTIFY") != std::string::npos;
-    bool isMSearch = ssdpPayload.find("M-SEARCH") != std::string::npos;
-
-    if (!isNotify && !isMSearch) {
-        return; // Neither NOTIFY nor M-SEARCH, exit
+    // Extract IP address of the sender (source IP)
+    pcpp::IPv4Layer* ipLayer = parsedPacket.getLayerOfType<pcpp::IPv4Layer>();
+    if (ipLayer != nullptr) {
+        clientIP = ipLayer->getSrcIPAddress().toString();
     }
 
-    if (isNotify) {
-        // Extract key fields: NT, NTS, LOCATION, USN, SERVER for NOTIFY
-        nt = headers["NT"];
-        nts = headers["NTS"];
-        location = headers["LOCATION"];
-        usn = headers["USN"];
-        server = headers["SERVER"];
-
-        // Display the extracted information (debug only)
-        //std::cout << "[SSDP] NOTIFY message received"
-        //          << " | NT: " << nt
-        //          << " | NTS: " << nts
-        //          << " | Location: " << location
-        //          << " | USN: " << usn
-        //          << " | Server: " << server
-        //          << std::endl;
+    // Extract MAC address of the sender (source MAC)
+    pcpp::EthLayer* ethLayer = parsedPacket.getLayerOfType<pcpp::EthLayer>();
+    if (ethLayer != nullptr) {
+        clientMAC = ethLayer->getSourceMac().toString();
     }
 
-    if (isMSearch) {
-        // Extract IP address of the sender (source IP)
-        pcpp::IPv4Layer* ipLayer = parsedPacket.getLayerOfType<pcpp::IPv4Layer>();
-        if (ipLayer != nullptr) {
-            clientIP = ipLayer->getSrcIPAddress().toString();
-        }
-
-        // Extract MAC address of the sender (source MAC)
-        pcpp::EthLayer* ethLayer = parsedPacket.getLayerOfType<pcpp::EthLayer>();
-        if (ethLayer != nullptr) {
-            clientMAC = ethLayer->getSourceMac().toString();
-        }
-
-        // Display M-SEARCH specific info
-        std::cout << "[SSDP] M-SEARCH message received"
-                  << " | Client IP: " << clientIP
-                  << " | Client MAC: " << clientMAC
-                  << std::endl;
-    }
+    auto ssdpData = std::make_unique<SSDPData>(parsedPacket.getRawPacket()->getPacketTimeStamp(), pcpp::MacAddress(clientMAC), pcpp::IPv4Address(clientIP), ssdpLayer.getSSDPType(), ssdpLayer.getSSDPHeaders());
+    hostManager.updateHost(ProtocolType::SSDP, std::move(ssdpData));
+    
 }
 
 void SSDPAnalyzer::printHostMap() {

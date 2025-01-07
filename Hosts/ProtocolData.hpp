@@ -4,6 +4,7 @@
 #include "MacAddress.h"
 #include "IPv4Layer.h"
 #include "../Layers/STP/STPLayer.hpp"
+#include "../Layers/SSDP/SSDPLayer.hpp"
 #include <string>
 #include <ctime>
 
@@ -124,6 +125,17 @@ struct STPData : public ProtocolData {
             bridgeIdentifier(bridgeId) {}  // Initialize from parameter
 };
 
+struct SSDPData : public ProtocolData {
+    pcpp::MacAddress senderMAC;
+    pcpp::IPv4Address senderIP;
+
+    SSDPLayer::SSDPType ssdpType;
+    std::vector<std::pair<std::string, std::string>> ssdpHeaders;
+
+    SSDPData(timespec ts, pcpp::MacAddress mac, pcpp::IPv4Address ip, SSDPLayer::SSDPType type, std::vector<std::pair<std::string, std::string>> headers)
+        : ProtocolData(ProtocolType::SSDP, ts), senderMAC(mac), senderIP(ip), ssdpType(type), ssdpHeaders(headers) {}
+};
+
 /**
  * @struct ProtocolDataComparator
  * @brief Comparator for protocol data.
@@ -173,6 +185,13 @@ struct ProtocolDataComparator {
                    lhsData->bridgeIdentifier.priority != rhsData->bridgeIdentifier.priority || lhsData->bridgeIdentifier.systemIDExtension != rhsData->bridgeIdentifier.systemIDExtension ||
                    lhsData->bridgeIdentifier.systemID != rhsData->bridgeIdentifier.systemID;
         }
+
+        if (lhs->getProtocolType() == ProtocolType::SSDP) {
+            const SSDPData* lhsData = static_cast<const SSDPData*>(lhs.get());
+            const SSDPData* rhsData = static_cast<const SSDPData*>(rhs.get());
+            return lhsData->senderMAC != rhsData->senderMAC || lhsData->senderIP != rhsData->senderIP || std::equal(lhsData->ssdpHeaders.begin(), lhsData->ssdpHeaders.end(), rhsData->ssdpHeaders.begin());
+        }
+        
 
         return false; // Fallback case
     }

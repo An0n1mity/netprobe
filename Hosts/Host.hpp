@@ -140,6 +140,18 @@ class Host {
                     stpJson["BRIDGE IDENTIFIER"]["SYSTEM ID"] = pcpp::MacAddress(reinterpret_cast<uint8_t*>(&reversedBridgeSystemID)).toString();
                     protocolsJson["STP"].append(stpJson);
                 }
+                else if (protocol_data->protocol == ProtocolType::SSDP) {
+                    SSDPData* ssdp_data = static_cast<SSDPData*>(protocol_data);
+                    Json::Value ssdpJson;
+                    ssdpJson["TIMESTAMP"] = dateToString(ssdp_data->timestamp);
+                    ssdpJson["TYPE"] = ssdp_data->ssdpType == SSDPLayer::SSDPType::NOTIFY ? "NOTIFY" : "M-SEARCH";
+                    Json::Value headersJson;
+                    for (const auto& header : ssdp_data->ssdpHeaders) {
+                        headersJson[header.first] = header.second;
+                    }
+                    ssdpJson["HEADERS"] = headersJson;
+                    protocolsJson["SSDP"].append(ssdpJson);
+                }
             }
         }
 
