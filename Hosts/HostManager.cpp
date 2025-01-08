@@ -137,6 +137,40 @@ void HostManager::updateHost(ProtocolType protocol, std::unique_ptr<ProtocolData
             break;
         }
 
+        case ProtocolType::LLDP: {
+            LLDPData* lldpData = dynamic_cast<LLDPData*>(data.get());
+            if (lldpData == nullptr) {
+                return;
+            }
+
+            pcpp::MacAddress senderMac = lldpData->senderMAC;
+            std::string portID = lldpData->portID;
+            std::string portDescription = lldpData->portDescription;
+            std::string systemName = lldpData->systemName;
+            std::string systemDescription = lldpData->systemDescription;
+
+            // Check if the host already exists
+            if (hostMap.find(senderMac) != hostMap.end()) {
+                Host& host = hostMap[senderMac];
+                host.updateProtocolData(ProtocolType::LLDP, std::move(data));
+                clock_gettime(CLOCK_REALTIME, &last_seen);
+                host.setLastSeen(last_seen);
+
+                updateHostJson(host);
+            } else {
+                Host host(senderMac);
+                clock_gettime(CLOCK_REALTIME, &first_seen);
+                host.setFirstSeen(first_seen);
+                host.setLastSeen(first_seen);
+                host.updateProtocolData(ProtocolType::LLDP, std::move(data));
+                
+                hostsJson.append(host.toJson());
+                hostMap[senderMac] = std::move(host);
+            }
+
+            break;
+        }
+
         case ProtocolType::SSDP: {
             SSDPData* ssdpData = dynamic_cast<SSDPData*>(data.get());
             if (ssdpData == nullptr) {
