@@ -105,6 +105,17 @@ struct ARPData : public ProtocolData {
         : ProtocolData(ProtocolType::ARP, ts), senderMac(mac), senderIp(sender), targetIp(target) {}
 };
 
+struct LLDPData : public ProtocolData {
+    pcpp::MacAddress senderMAC;
+    std::string portID;
+    std::string portDescription;
+    std::string systemName;
+    std::string systemDescription;
+
+    LLDPData(timespec ts, pcpp::MacAddress mac, std::string port, std::string portDesc, std::string sysName, std::string sysDesc)
+        : ProtocolData(ProtocolType::LLDP, ts), senderMAC(mac), portID(port), portDescription(portDesc), systemName(sysName), systemDescription(sysDesc) {}
+};
+
 // Data structure for STP protocol
 /**
  * @struct STPData
