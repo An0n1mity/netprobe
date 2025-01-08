@@ -152,6 +152,44 @@ class Host {
                     ssdpJson["HEADERS"] = headersJson;
                     protocolsJson["SSDP"].append(ssdpJson);
                 }
+                else if (protocol_data->protocol == ProtocolType::CDP) {
+                    CDPData* cdp_data = static_cast<CDPData*>(protocol_data);
+                    Json::Value cdpJson;
+                    cdpJson["TIMESTAMP"] = dateToString(cdp_data->timestamp);
+                    cdpJson["DEVICE ID"] = cdp_data->deviceId.id;
+                    Json::Value addressesJson;
+                    for (const auto& address : cdp_data->addresses.addresses) {
+                        Json::Value addressJson;
+                        addressJson["PROTOCOL TYPE"] = address.protocolType;
+                        addressJson["PROTOCOL LENGTH"] = address.protocolLength;
+                        addressJson["PROTOCOL"] = address.protocol;
+                        addressJson["ADDRESS LENGTH"] = address.addressLength;
+                        addressJson["ADDRESS"] = getAddressString(address);
+                        addressesJson.append(addressJson);
+                    }
+                    cdpJson["ADDRESSES"] = addressesJson;
+                    cdpJson["PORT ID"] = cdp_data->portId;
+                    cdpJson["CAPABILITIES"] = cdp_data->capabilitiesStr;
+                    cdpJson["SOFTWARE VERSION"] = cdp_data->softwareVersion;
+                    cdpJson["PLATFORM"] = cdp_data->platform;
+                    cdpJson["VTP MANAGEMENT DOMAIN"] = cdp_data->vtpManagementDomain;
+                    cdpJson["NATIVE VLAN"] = cdp_data->nativeVlan;
+                    cdpJson["DUPLEX"] = cdp_data->duplex == 0 ? "Half" : "Full";
+                    cdpJson["TRUST BITMAP"] = cdp_data->trustBitmap;
+                    cdpJson["UNTRUSTED PORT COS"] = cdp_data->untrustedPortCos;
+                    Json::Value mgmtAddressesJson;
+                    for (const auto& mgmtAddress : cdp_data->mgmtAddresses.addresses) {
+                        Json::Value mgmtAddressJson;
+                        mgmtAddressJson["PROTOCOL TYPE"] = mgmtAddress.protocolType;
+                        mgmtAddressJson["PROTOCOL LENGTH"] = mgmtAddress.protocolLength;
+                        mgmtAddressJson["PROTOCOL"] = mgmtAddress.protocol;
+                        mgmtAddressJson["ADDRESS LENGTH"] = mgmtAddress.addressLength;
+                        mgmtAddressJson["ADDRESS"] = getAddressString(mgmtAddress);
+                        mgmtAddressesJson.append(mgmtAddressJson);
+                    }
+                    cdpJson["MGMT ADDRESSES"] = mgmtAddressesJson;
+                    protocolsJson["CDP"].append(cdpJson);
+                }
             }
         }
 
