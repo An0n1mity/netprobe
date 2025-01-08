@@ -123,6 +123,17 @@ class Host {
                     arpJson["TARGET IP"] = arp_data->targetIp.toString();
                     protocolsJson["ARP"].append(arpJson);
                 }
+                else if (protocol_data->protocol == ProtocolType::LLDP) {
+                    LLDPData* lldp_data = static_cast<LLDPData*>(protocol_data);
+                    Json::Value lldpJson;
+                    lldpJson["TIMESTAMP"] = dateToString(lldp_data->timestamp);
+                    lldpJson["SENDER MAC"] = lldp_data->senderMAC.toString();
+                    lldpJson["PORT ID"] = lldp_data->portID;
+                    lldpJson["PORT DESCRIPTION"] = lldp_data->portDescription;
+                    lldpJson["SYSTEM NAME"] = lldp_data->systemName;
+                    lldpJson["SYSTEM DESCRIPTION"] = lldp_data->systemDescription;
+                    protocolsJson["LLDP"].append(lldpJson);
+                }
                 else if (protocol_data->protocol == ProtocolType::STP) {
                     STPData* stp_data = static_cast<STPData*>(protocol_data);
                     Json::Value stpJson;
