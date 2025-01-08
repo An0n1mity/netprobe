@@ -5,6 +5,7 @@
 #include "IPv4Layer.h"
 #include "../Layers/STP/STPLayer.hpp"
 #include "../Layers/SSDP/SSDPLayer.hpp"
+#include "../Layers/CDP/CDPLayer.hpp"
 #include <string>
 #include <ctime>
 
@@ -134,6 +135,27 @@ struct SSDPData : public ProtocolData {
 
     SSDPData(timespec ts, pcpp::MacAddress mac, pcpp::IPv4Address ip, SSDPLayer::SSDPType type, std::vector<std::pair<std::string, std::string>> headers)
         : ProtocolData(ProtocolType::SSDP, ts), senderMAC(mac), senderIP(ip), ssdpType(type), ssdpHeaders(headers) {}
+};
+
+struct CDPData : public ProtocolData {
+    pcpp::MacAddress senderMAC;
+    pcpp::IPv4Address senderIP;
+    CDPLayer::DeviceId deviceId;
+    CDPLayer::Addresses addresses;
+    std::string portId;
+    uint32_t capabilities;
+    std::string capabilitiesStr;
+    std::string softwareVersion;
+    std::string platform;
+    std::string vtpManagementDomain;
+    uint16_t nativeVlan;
+    uint8_t duplex;
+    uint8_t trustBitmap;
+    uint8_t untrustedPortCos;
+    CDPLayer::Addresses mgmtAddresses;
+
+    CDPData(timespec ts, pcpp::MacAddress mac, CDPLayer cdpLayer)
+        : ProtocolData(ProtocolType::CDP, ts), senderMAC(mac), deviceId(cdpLayer.getDeviceId()), addresses(cdpLayer.getAddresses()), portId(cdpLayer.getPortId()), capabilities(cdpLayer.getCapabilities()), capabilitiesStr(cdpLayer.capabilitiesToString(cdpLayer.getCapabilities())), softwareVersion(cdpLayer.getSoftwareVersion()), platform(cdpLayer.getPlatform()), vtpManagementDomain(cdpLayer.getVTPManagementDomain()), nativeVlan(cdpLayer.getNativeVlan()), duplex(cdpLayer.getDuplex()), trustBitmap(cdpLayer.getTrustBitmap()), untrustedPortCos(cdpLayer.getUntrustedPortCos()), mgmtAddresses(cdpLayer.getMgmtAddresses()) {}
 };
 
 /**
