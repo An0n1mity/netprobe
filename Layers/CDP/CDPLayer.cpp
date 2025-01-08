@@ -70,15 +70,6 @@ struct CDPLayer::DeviceId CDPLayer::getDeviceId() const {
     return deviceId;
 }
 
-// toHexString
-std::string toHexString(const uint8_t* data, size_t length) {
-    std::ostringstream oss;
-    for (size_t i = 0; i < length; ++i) {
-        oss << std::hex << std::setw(2) << std::setfill('0') << (int)data[i];
-    }
-    return oss.str();
-}
-
 struct CDPLayer::Addresses CDPLayer::getAddresses() const {
     TLV tlv = getTLV(CDP_TLV_TYPE_ADDRESS);
     Addresses addresses;
@@ -90,9 +81,7 @@ struct CDPLayer::Addresses CDPLayer::getAddresses() const {
 
     // Extract the number of addresses offset 4 bytes and convert to integer
     addresses.numberOfAddresses = tlv.value[4] << 24 | tlv.value[5] << 16 | tlv.value[6] << 8 | tlv.value[7];
-    // print tlv value
-    std::cout << "TLV value: " << toHexString(tlv.value, tlv.length) << std::endl;
-    std::cout << "Number of addresses: " << addresses.numberOfAddresses << std::endl;
+   
 
     // Ensure the TLV has a valid length
     if (tlv.length < 1 + addresses.numberOfAddresses * 5) {
@@ -107,11 +96,6 @@ struct CDPLayer::Addresses CDPLayer::getAddresses() const {
         address.protocol = tlv.value[10 + i * 5];
         address.addressLength = tlv.value[11 + i * 5] << 8 | tlv.value[12 + i * 5];
         address.address = tlv.value + 13 + i * 5;
-        std::cout << "Protocol type: " << address.protocolType << std::endl;
-        std::cout << "Protocol length: " << address.protocolLength << std::endl;
-        std::cout << "Protocol: " << address.protocol << std::endl;
-        std::cout << "Address length: " << address.addressLength << std::endl;
-        std::cout << "Address: " << toHexString(address.address, address.addressLength) << std::endl;
         addresses.addresses.push_back(address);
     }
 
@@ -129,53 +113,180 @@ std::string CDPLayer::getPortId() const {
     return std::string(reinterpret_cast<const char*>(tlv.value), tlv.length);
 }
 
-std::vector<struct CDPLayer::SystemCapability> CDPLayer::getCapabilities() const {
+uint32_t CDPLayer::getCapabilities() const {
     TLV tlv = getTLV(CDP_TLV_TYPE_CAPABILITIES);
-    std::vector<struct SystemCapability> capabilities;
 
-    // Ensure the TLV has the expected length (4 bytes: 2 for supported, 2 for enabled)
+    // Ensure the TLV has a valid length
     if (tlv.length < 4) {
-        return capabilities;  // Return an empty vector if the TLV is invalid
+        return 0;
     }
 
-    // Extract the system capabilities and enabled capabilities (each 2 bytes)
-    uint16_t supportedCapabilities = ntohs(*reinterpret_cast<const uint16_t*>(tlv.value));
-    uint16_t enabledCapabilities = ntohs(*reinterpret_cast<const uint16_t*>(tlv.value + 2));
+    return (tlv.value[4] << 24) | (tlv.value[5] << 16) | (tlv.value[6] << 8) | tlv.value[7];
+}
 
-    // Add each capability to the vector based on the bitmask
-    if (supportedCapabilities & CAPABILITY_ROUTER) {
-        capabilities.push_back({CAPABILITY_ROUTER, static_cast<bool>(enabledCapabilities & CAPABILITY_ROUTER)});
-    }
-    if (supportedCapabilities & CAPABILITY_TRANSPARENT_BRIDGE) {
-        capabilities.push_back({CAPABILITY_TRANSPARENT_BRIDGE, static_cast<bool>(enabledCapabilities & CAPABILITY_TRANSPARENT_BRIDGE)});
-    }
-    if (supportedCapabilities & CAPABILITY_SOURCE_ROUTE_BRIDGE) {
-        capabilities.push_back({CAPABILITY_SOURCE_ROUTE_BRIDGE, static_cast<bool>(enabledCapabilities & CAPABILITY_SOURCE_ROUTE_BRIDGE)});
-    }
-    if (supportedCapabilities & CAPABILITY_SWITCH) {
-        capabilities.push_back({CAPABILITY_SWITCH, static_cast<bool>(enabledCapabilities & CAPABILITY_SWITCH)});
-    }
-    if (supportedCapabilities & CAPABILITY_HOST) {
-        capabilities.push_back({CAPABILITY_HOST, static_cast<bool>(enabledCapabilities & CAPABILITY_HOST)});
-    }
-    if (supportedCapabilities & CAPABILITY_IGMP) {
-        capabilities.push_back({CAPABILITY_IGMP, static_cast<bool>(enabledCapabilities & CAPABILITY_IGMP)});
-    }
-    if (supportedCapabilities & CAPABILITY_REPEATER) {
-        capabilities.push_back({CAPABILITY_REPEATER, static_cast<bool>(enabledCapabilities & CAPABILITY_REPEATER)});
-    }
-    if (supportedCapabilities & CAPABILITY_VOIP_PHONE) {
-        capabilities.push_back({CAPABILITY_VOIP_PHONE, static_cast<bool>(enabledCapabilities & CAPABILITY_VOIP_PHONE)});
-    }
-    if (supportedCapabilities & CAPABILITY_REMOTELY_MANAGED) {
-        capabilities.push_back({CAPABILITY_REMOTELY_MANAGED, static_cast<bool>(enabledCapabilities & CAPABILITY_REMOTELY_MANAGED)});
-    }
-    if (supportedCapabilities & CAPABILITY_CVTA) {
-        capabilities.push_back({CAPABILITY_CVTA, static_cast<bool>(enabledCapabilities & CAPABILITY_CVTA)});
-    }
-    if (supportedCapabilities & CAPABILITY_TWO_PORT_MAC_RELAY) {
-        capabilities.push_back({CAPABILITY_TWO_PORT_MAC_RELAY, static_cast<bool>(enabledCapabilities & CAPABILITY_TWO_PORT_MAC_RELAY)});
+std::string CDPLayer::capabilitiesToString(uint32_t capabilities) const {
+    std::ostringstream oss;
+    if (capabilities & CAPABILITY_ROUTER) oss << "Router ";
+    if (capabilities & CAPABILITY_TRANSPARENT_BRIDGE) oss << "Transparent Bridge ";
+    if (capabilities & CAPABILITY_SOURCE_ROUTE_BRIDGE) oss << "Source Route Bridge ";
+    if (capabilities & CAPABILITY_SWITCH) oss << "Switch ";
+    if (capabilities & CAPABILITY_HOST) oss << "Host ";
+    if (capabilities & CAPABILITY_IGMP) oss << "IGMP ";
+    if (capabilities & CAPABILITY_REPEATER) oss << "Repeater ";
+    if (capabilities & CAPABILITY_VOIP_PHONE) oss << "VoIP Phone ";
+    if (capabilities & CAPABILITY_REMOTELY_MANAGED) oss << "Remotely Managed ";
+    if (capabilities & CAPABILITY_CVTA) oss << "CVTA ";
+    if (capabilities & CAPABILITY_TWO_PORT_MAC_RELAY) oss << "Two Port MAC Relay ";
+    return oss.str();
+}
+
+std::string CDPLayer::getSoftwareVersion() const {
+    TLV tlv = getTLV(CDP_TLV_TYPE_SOFTWARE_VERSION);
+
+    // Ensure the TLV has a valid length
+    if (tlv.length < 1) {
+        return "";
     }
 
-    return capabilities;
+    // Convert the TLV value to a std::string
+    std::string softwareVersion(reinterpret_cast<const char*>(tlv.value), tlv.length);
+
+    // Remove every 0x0A byte (newline character) from the string
+    softwareVersion.erase(
+        std::remove(softwareVersion.begin(), softwareVersion.end(), '\n'),
+        softwareVersion.end()
+    );
+
+    return softwareVersion;
+}
+
+std::string CDPLayer::getPlatform() const {
+    TLV tlv = getTLV(CDP_TLV_TYPE_PLATFORM);
+
+    // Ensure the TLV has a valid length
+    if (tlv.length < 1) {
+        return "";
+    }
+
+    // Convert the TLV value to a std::string
+    std::string platform(reinterpret_cast<const char*>(tlv.value), tlv.length);
+
+    // Remove every 0x0A byte (newline character) from the string
+    platform.erase(
+        std::remove(platform.begin(), platform.end(), '\n'),
+        platform.end()
+    );
+
+    return platform;
+}
+
+std::string CDPLayer::getVTPManagementDomain() const {
+    TLV tlv = getTLV(CDP_TLV_TYPE_VTP_MANAGEMENT_DOMAIN);
+
+    // Ensure the TLV has a valid length
+    if (tlv.length < 1) {
+        return "";
+    }
+
+    return std::string(reinterpret_cast<const char*>(tlv.value), tlv.length);
+}
+
+uint8_t CDPLayer::getDuplex() const {
+    TLV tlv = getTLV(CDP_TLV_TYPE_DUPLEX);
+
+    // Ensure the TLV has a valid length
+    if (tlv.length < 1) {
+        return 0;
+    }
+
+    return tlv.value[4];
+}
+
+uint16_t CDPLayer::getNativeVlan() const {
+    TLV tlv = getTLV(CDP_TLV_TYPE_NATIVE_VLAN);
+
+    // Ensure the TLV has a valid length
+    if (tlv.length < 2) {
+        return 0;
+    }
+
+    return (tlv.value[4] << 8) | tlv.value[5];
+}
+
+uint8_t CDPLayer::getTrustBitmap() const {
+    TLV tlv = getTLV(CDP_TLV_TYPE_TRUST_BITMAP);
+
+    // Ensure the TLV has a valid length
+    if (tlv.length < 1) {
+        return 0;
+    }
+
+    return tlv.value[4];
+}
+
+uint8_t CDPLayer::getUntrustedPortCos() const {
+    TLV tlv = getTLV(CDP_TLV_TYPE_UNTRUSTED_PORT_COS);
+
+    // Ensure the TLV has a valid length
+    if (tlv.length < 1) {
+        return 0;
+    }
+
+    return tlv.value[4];
+}
+
+struct CDPLayer::Addresses CDPLayer::getMgmtAddresses() const {
+    TLV tlv = getTLV(CDP_TLV_TYPE_MGMT_ADDRESS);
+    Addresses addresses;
+
+    // Ensure the TLV has a valid length
+    if (tlv.length < 1) {
+        return addresses;
+    }
+
+    // Extract the number of addresses offset 4 bytes and convert to integer
+    addresses.numberOfAddresses = tlv.value[4] << 24 | tlv.value[5] << 16 | tlv.value[6] << 8 | tlv.value[7];
+
+    // Ensure the TLV has a valid length
+    if (tlv.length < 1 + addresses.numberOfAddresses * 5) {
+        return addresses;
+    }
+
+    // Extract the addresses
+    for (size_t i = 0; i < addresses.numberOfAddresses; i++) {
+        Address address;
+        address.protocolType = tlv.value[8 + i * 5];
+        address.protocolLength = tlv.value[9 + i * 5];
+        address.protocol = tlv.value[10 + i * 5];
+        address.addressLength = tlv.value[11 + i * 5] << 8 | tlv.value[12 + i * 5];
+        address.address = tlv.value + 13 + i * 5;
+        addresses.addresses.push_back(address);
+    }
+
+    return addresses;
+}
+
+std::string toHexString(const uint8_t* data, size_t length) {
+    std::ostringstream oss;
+    for (size_t i = 0; i < length; ++i) {
+        oss << std::hex << std::setw(2) << std::setfill('0') << (int)data[i];
+    }
+    return oss.str();
+}
+
+std::string getAddressString(struct CDPLayer::Address address) {
+    if(address.protocol == 0xcc) {
+        // Return the ipv4 address
+        return std::to_string(address.address[0]) + "." + std::to_string(address.address[1]) + "." + std::to_string(address.address[2]) + "." + std::to_string(address.address[3]);
+    } else if(address.protocol == 0x86dd) {
+        // Return the ipv6 address
+        std::ostringstream oss;
+        for (size_t i = 0; i < address.addressLength; ++i) {
+            oss << std::hex << std::setw(2) << std::setfill('0') << (int)address.address[i];
+        }
+        return oss.str();
+    } else {
+        // Return the address as a hex string
+        return toHexString(address.address, address.addressLength);
+    }
 }

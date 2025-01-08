@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <stdexcept>
 #include <iomanip>
+#include <algorithm>
 
 // Class representing CDP Layer
 /**
@@ -35,6 +36,7 @@ public:
         CDP_TLV_TYPE_SOFTWARE_VERSION = 0x0005,
         CDP_TLV_TYPE_PLATFORM = 0x0006,
         CDP_TLV_TYPE_IP_PREFIX = 0x0007,
+        CDP_TLV_TYPE_VTP_MANAGEMENT_DOMAIN = 0x0009,
         CDP_TLV_TYPE_NATIVE_VLAN = 0x000A,
         CDP_TLV_TYPE_MGMT_ADDRESS = 0x0016,
         CDP_TLV_TYPE_DUPLEX = 0x000B,
@@ -84,11 +86,6 @@ public:
         CAPABILITY_TWO_PORT_MAC_RELAY = 1 << 10
     };
 
-    struct SystemCapability {
-        SystemCapabilities type;
-        bool enabled;
-    };
-
     struct TLV {
         uint8_t type;
         uint16_t length;
@@ -99,7 +96,16 @@ public:
     struct CDPLayer::DeviceId getDeviceId() const;
     struct CDPLayer::Addresses getAddresses() const;
     std::string getPortId() const;
-    std::vector<struct CDPLayer::SystemCapability> getCapabilities() const;
+    uint32_t getCapabilities() const;
+    std::string capabilitiesToString(uint32_t capabilities) const;
+    std::string getSoftwareVersion() const;
+    std::string getPlatform() const;
+    std::string getVTPManagementDomain() const;
+    uint16_t getNativeVlan() const;
+    uint8_t getDuplex() const;
+    uint8_t getTrustBitmap() const;
+    uint8_t getUntrustedPortCos() const;
+    struct CDPLayer::Addresses getMgmtAddresses() const;
     uint16_t getTTL() const;
 
     // Overloaded operator for outputting CDP layer information
@@ -116,6 +122,24 @@ private:
 
     // Data structures for storing parsed TLVs
     std::vector<TLV> tlvs;
+
+    const std::unordered_map<uint32_t, std::string> capabilitiesMap = {
+        {CAPABILITY_ROUTER, "Router"},
+        {CAPABILITY_TRANSPARENT_BRIDGE, "Transparent Bridge"},
+        {CAPABILITY_SOURCE_ROUTE_BRIDGE, "Source Route Bridge"},
+        {CAPABILITY_SWITCH, "Switch"},
+        {CAPABILITY_HOST, "Host"},
+        {CAPABILITY_IGMP, "IGMP"},
+        {CAPABILITY_REPEATER, "Repeater"},
+        {CAPABILITY_VOIP_PHONE, "VoIP Phone"},
+        {CAPABILITY_REMOTELY_MANAGED, "Remotely Managed"},
+        {CAPABILITY_CVTA, "CVTA"},
+        {CAPABILITY_TWO_PORT_MAC_RELAY, "Two Port MAC Relay"}
+    };
 };
+
+std::string toHexString(const uint8_t* data, size_t length);
+std::string getAddressString(struct CDPLayer::Address address);
+
 
 #endif // CDPLAYER_HPP
