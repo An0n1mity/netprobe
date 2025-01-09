@@ -12,6 +12,10 @@
 #include "Analyzers/mDNS/mDNSAnalyzer.hpp"
 #include "Analyzers/ARP/ARPAnalyzer.hpp"
 #include "Analyzers/STP/STPAnalyzer.hpp"
+#include "Analyzers/SSDP/SSDPAnalyzer.hpp"
+#include "Analyzers/CDP/CDPAnalyzer.hpp"
+#include "Analyzers/LLDP/LLDPAnalyzer.hpp"
+#include "Analyzers/WOL/WOLAnalyzer.hpp"
 #include "Hosts/HostManager.hpp"
 #include <atomic> // For atomic flag
 
@@ -46,7 +50,7 @@ int main() {
     // Atomic flag for the infinite loop to dump hosts
     std::atomic<bool> dumpHosts(false);
     // Get the timeout duration from environment variable
-    const char* durationEnv = "-1";
+    const char* durationEnv = "5";
     if (!durationEnv) {
         std::cerr << "Error: TIMEOUT environment variable is not set." << std::endl;
         return 1;
@@ -87,11 +91,19 @@ int main() {
     mDNSAnalyzer mdnsAnalyzer(hostManager);
     ARPAnalyzer arpAnalyzer(hostManager);
     STPAnalyzer stpAnalyzer(hostManager);
+    SSDPAnalyzer ssdpAnalyzer(hostManager);
+    CDPAnalyzer cdpAnalyzer(hostManager);
+    LLDPAnalyzer lldpAnalyzer(hostManager);
+    WOLAnalyzer wolAnalyzer(hostManager);
 
     // Add analyzers to the manager
     captureManager.addAnalyzer(&dhcpAnalyzer);
     captureManager.addAnalyzer(&arpAnalyzer);
     captureManager.addAnalyzer(&stpAnalyzer);
+    captureManager.addAnalyzer(&ssdpAnalyzer);
+    captureManager.addAnalyzer(&cdpAnalyzer);
+    captureManager.addAnalyzer(&lldpAnalyzer);
+    captureManager.addAnalyzer(&wolAnalyzer);
 
     // Start capturing packets
     std::cout << "Starting packet capture on interface: " << interface << std::endl;
