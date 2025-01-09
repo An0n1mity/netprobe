@@ -69,19 +69,17 @@ void SSDPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
     }
 
     auto ssdpData = std::make_unique<SSDPData>(parsedPacket.getRawPacket()->getPacketTimeStamp(), pcpp::MacAddress(clientMAC), pcpp::IPv4Address(clientIP), ssdpLayer.getSSDPType(), ssdpLayer.getSSDPHeaders());
-    hostManager.updateHost(ProtocolType::SSDP, std::move(ssdpData));
     
-}
-
-void SSDPAnalyzer::printHostMap() {
-    std::cout << "Captured SSDP Information:" << std::endl;
-
-    // Remove trailing spaces or newlines for NOTIFY info
-    server.erase(std::remove_if(server.begin(), server.end(), ::isspace), server.end());
-    location.erase(std::remove_if(location.begin(), location.end(), ::isspace), location.end());
-
-    std::cout << "Server: " << server << " | Location: " << location << std::endl;
-
-    // Print M-SEARCH specific info
-    std::cout << "M-SEARCH Client IP: " << clientIP << " | Client MAC: " << clientMAC << std::endl;
+    #ifdef DEBUG
+    std::cout << "SSDP Data:" << std::endl;
+    std::cout << "\tClient MAC: " << ssdpData->senderMAC << std::endl;
+    std::cout << "\tClient IP: " << ssdpData->senderIP << std::endl;
+    std::cout << "\tSSDP Type: " << ssdpData->ssdpType << std::endl;
+    std::cout << "\tSSDP Headers:" << std::endl;
+    for (const auto& header : ssdpData->ssdpHeaders) {
+        std::cout << "\t\t" << header.first << ": " << header.second << std::endl;
+    }
+    #endif
+    
+    hostManager.updateHost(ProtocolType::SSDP, std::move(ssdpData));
 }

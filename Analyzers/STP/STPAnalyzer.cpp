@@ -38,5 +38,11 @@ void STPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
     pcpp::MacAddress srcMac(srcMacStr);
 
     auto stpData = std::make_unique<STPData>(ts, srcMac, rootIdentifier, bridgeIdentifier);
+    
+    #ifdef DEBUG
+    std::cout << "STP Data:" << std::endl;
+    std::cout << stplayer << std::endl;
+    #endif
+    
     hostManager.updateHost(ProtocolType::STP, std::move(stpData));
 }

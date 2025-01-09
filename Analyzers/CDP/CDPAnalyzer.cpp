@@ -43,22 +43,7 @@ void CDPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
 
     // Create CDPLayer 
     CDPLayer cdpLayer(payload + 12, payloadSize - 12);
-    struct CDPLayer::DeviceId deviceId = cdpLayer.getDeviceId();
-    std::cout << "Device ID: " << deviceId.id << std::endl;
-    std::cout << "Port ID: " << cdpLayer.getPortId() << std::endl;
-    struct CDPLayer::Addresses addresses = cdpLayer.getAddresses();
-    std::cout << "Number of addresses: " << addresses.numberOfAddresses << std::endl;
-    std::cout << "Capabilities: " << cdpLayer.capabilitiesToString(cdpLayer.getCapabilities()) << std::endl;
-    std::cout << "Software Version: " << cdpLayer.getSoftwareVersion() << std::endl;
-    std::cout << "Platform: " << cdpLayer.getPlatform() << std::endl;
-    std::cout << "VTP Management Domain: " << cdpLayer.getVTPManagementDomain() << std::endl;
-    printf("Duplex: 0x%02x\n", cdpLayer.getDuplex());
-    std::cout << "Native VLAN: " << cdpLayer.getNativeVlan() << std::endl;
-    printf("Trust Bitmap: 0x%02x\n", cdpLayer.getTrustBitmap());    
-    printf("Untrusted Port COS: 0x%02x\n", cdpLayer.getUntrustedPortCos());
-    struct CDPLayer::Addresses mgmtAddresses = cdpLayer.getMgmtAddresses();
-    std::cout << "Number of management addresses: " << mgmtAddresses.numberOfAddresses << std::endl;
-
+    
     std::string ethLayerStr = ethLayer->toString();
     std::string srcPrefix = "Src: ";
     size_t srcPos = ethLayerStr.find(srcPrefix);
@@ -68,6 +53,12 @@ void CDPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
     pcpp::MacAddress srcMac(srcMacStr);
 
     auto cdpData = std::make_unique<CDPData>(ts, srcMac, cdpLayer);
+    
+    #ifdef DEBUG
+    std::cout << "CDP Data:" << std::endl;
+    std::cout << cdpLayer << std::endl;
+    #endif
+        
     hostManager.updateHost(ProtocolType::CDP, std::move(cdpData));
 }
 

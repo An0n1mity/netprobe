@@ -22,5 +22,12 @@ void WOLAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
 
     // Create a WOLData object
     auto wolData = std::make_unique<WOLData>(ts, sourceMacAddr, targetMacAddrStr);
+    
+    #ifdef DEBUG
+    std::cout << "WOL Data:" << std::endl;
+    std::cout << "\tSource MAC: " << wolData->senderMAC << std::endl;
+    std::cout << "\tTarget MAC: " << wolData->targetMAC << std::endl;
+    #endif
+    
     hostManager.updateHost(ProtocolType::WOL, std::move(wolData));
 }

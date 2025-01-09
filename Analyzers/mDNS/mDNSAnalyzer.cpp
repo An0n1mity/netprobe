@@ -46,5 +46,14 @@ void mDNSAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
 
     // Update the host manager with the mDNS data
     auto mdnsData = std::make_unique<mDNSData>(ts, queriedDomain, srcMac, hostname, ipAddress);
+    
+    #ifdef DEBUG
+    std::cout << "mDNS Data:" << std::endl;
+    std::cout << "\tQueried Domain: " << mdnsData->queriedDomain << std::endl;
+    std::cout << "\tClient MAC: " << mdnsData->clientMac << std::endl;
+    std::cout << "\tHostname: " << mdnsData->hostname << std::endl;
+    std::cout << "\tIP Address: " << mdnsData->ipAddress << std::endl;
+    #endif
+
     hostManager.updateHost(ProtocolType::MDNS, std::move(mdnsData));
 }

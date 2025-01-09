@@ -1,6 +1,8 @@
 #ifndef ANALYZER_HPP
 #define ANALYZER_HPP
 
+#define DEBUG
+
 #include "PcapLiveDeviceList.h"
 #include "PcapLiveDevice.h"
 #include "Packet.h"

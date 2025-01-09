@@ -34,5 +34,15 @@ void LLDPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
 
     // Create an LLDPData object
     auto lldpData = std::make_unique<LLDPData>(ts, senderMac, portID, portDescription, systemName, systemDescription);
+    
+    #ifdef DEBUG
+    std::cout << "LLDP Data:" << std::endl;
+    std::cout << "\tSender MAC: " << lldpData->senderMAC << std::endl;
+    std::cout << "\tPort ID: " << lldpData->portID << std::endl;
+    std::cout << "\tPort Description: " << lldpData->portDescription << std::endl;
+    std::cout << "\tSystem Name: " << lldpData->systemName << std::endl;
+    std::cout << "\tSystem Description: " << lldpData->systemDescription << std::endl;
+    #endif
+    
     hostManager.updateHost(ProtocolType::LLDP, std::move(lldpData));
 }

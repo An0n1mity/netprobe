@@ -35,5 +35,16 @@ void DHCPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
 
     // Update the host manager with the DHCP data
     auto dhcpData = std::make_unique<DHCPData>(ts, clientMac, ipAddress, "", dhcpServerIp, gatewayIp, dnsServerIp);
+    
+    #ifdef DEBUG
+    std::cout << "DHCP Data:" << std::endl;
+    std::cout << "\tClient MAC: " << dhcpData->clientMac << std::endl;
+    std::cout << "\tIP Address: " << dhcpData->ipAddress << std::endl;
+    std::cout << "\tHostname: " << dhcpData->hostname << std::endl;
+    std::cout << "\tDHCP Server IP: " << dhcpData->dhcpServerIp << std::endl;
+    std::cout << "\tGateway IP: " << dhcpData->gatewayIp << std::endl;
+    std::cout << "\tDNS Server IP: " << dhcpData->dnsServerIp << std::endl;
+    #endif
+    
     hostManager.updateHost(ProtocolType::DHCP, std::move(dhcpData));
 }
