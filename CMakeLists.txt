@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5.0)
-project(cartographie-passive VERSION 0.1.0 LANGUAGES C CXX)
+project(netprobe VERSION 0.1.0 LANGUAGES C CXX)
 
 include(FindPCAP.cmake)
 
