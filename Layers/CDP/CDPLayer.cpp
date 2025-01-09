@@ -266,6 +266,37 @@ struct CDPLayer::Addresses CDPLayer::getMgmtAddresses() const {
     return addresses;
 }
 
+std::ostream& operator<<(std::ostream& os, const CDPLayer& layer) {
+    os << "CDP Layer" << std::endl;
+    os << "  Device ID: " << layer.getDeviceId().id << std::endl;
+    os << "  Addresses:" << std::endl;
+    for (const auto& address : layer.getAddresses().addresses) {
+        os << "    Protocol Type: " << address.protocolType << std::endl;
+        os << "    Protocol Length: " << address.protocolLength << std::endl;
+        os << "    Protocol: " << address.protocol << std::endl;
+        os << "    Address Length: " << address.addressLength << std::endl;
+        os << "    Address: " << toHexString(address.address, address.addressLength) << std::endl;
+    }
+    os << "  Port ID: " << layer.getPortId() << std::endl;
+    os << "  Capabilities: " << layer.capabilitiesToString(layer.getCapabilities()) << std::endl;
+    os << "  Software Version: " << layer.getSoftwareVersion() << std::endl;
+    os << "  Platform: " << layer.getPlatform() << std::endl;
+    os << "  VTP Management Domain: " << layer.getVTPManagementDomain() << std::endl;
+    os << "  Native VLAN: " << layer.getNativeVlan() << std::endl;
+    os << "  Duplex: " << (layer.getDuplex() == 0 ? "Half" : "Full") << std::endl;
+    os << "  Trust Bitmap: " << layer.getTrustBitmap() << std::endl;
+    os << "  Untrusted Port CoS: " << layer.getUntrustedPortCos() << std::endl;
+    os << "  Management Addresses:" << std::endl;
+    for (const auto& address : layer.getMgmtAddresses().addresses) {
+        os << "    Protocol Type: " << address.protocolType << std::endl;
+        os << "    Protocol Length: " << address.protocolLength << std::endl;
+        os << "    Protocol: " << address.protocol << std::endl;
+        os << "    Address Length: " << address.addressLength << std::endl;
+        os << "    Address: " << toHexString(address.address, address.addressLength) << std::endl;
+    }
+    return os;
+}
+
 std::string toHexString(const uint8_t* data, size_t length) {
     std::ostringstream oss;
     for (size_t i = 0; i < length; ++i) {
