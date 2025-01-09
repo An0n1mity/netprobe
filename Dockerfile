@@ -30,16 +30,16 @@ RUN wget https://github.com/seladb/PcapPlusPlus/archive/v24.09.tar.gz \
     && cmake --install build --prefix /usr/local
 
 # Define the working directory
-WORKDIR /cartographie-passive
+WORKDIR /netprobe
 
 # Copy the project files into the container
-COPY Analyzers /cartographie-passive/Analyzers
-COPY Layers /cartographie-passive/Layers
-COPY Hosts /cartographie-passive/Hosts
-COPY CaptureManager.hpp /cartographie-passive/CaptureManager.hpp
-COPY main.cpp /cartographie-passive/main.cpp
-COPY CMakeLists.txt /cartographie-passive/CMakeLists.txt
-COPY FindPCAP.cmake /cartographie-passive/FindPCAP.cmake
+COPY Analyzers /netprobe/Analyzers
+COPY Layers /netprobe/Layers
+COPY Hosts /netprobe/Hosts
+COPY CaptureManager.hpp /netprobe/CaptureManager.hpp
+COPY main.cpp /netprobe/main.cpp
+COPY CMakeLists.txt /netprobe/CMakeLists.txt
+COPY FindPCAP.cmake /netprobe/FindPCAP.cmake
 
 # Build the application
 RUN mkdir build \
@@ -64,11 +64,14 @@ RUN wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/s
     && rm glibc-2.35-r1.apk
 
 # Copy the built application from the build stage
-COPY --from=build /cartographie-passive/Hosts/manuf /cartographie-passive/build/manuf
-COPY --from=build /cartographie-passive/build /cartographie-passive/build
+COPY --from=build /netprobe/Hosts/manuf /netprobe/build/manuf
+COPY --from=build /netprobe/build /netprobe/build
 
 # Define the working directory
-WORKDIR /cartographie-passive
+WORKDIR /netprobe
+
+# Create output directory
+RUN mkdir output
 
 # Run the application
-CMD ["./build/cartographie-passive"]
+CMD ["./build/netprobe"]

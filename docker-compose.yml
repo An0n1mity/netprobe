@@ -1,7 +1,8 @@
 version: '3.8'
 
 services:
-  cartographie-passive:
+  netprobe:
+    container_name: netprobe
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,6 +12,7 @@ services:
       - NET_ADMIN
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - ./Output:/netprobe/output
     environment:
       - INTERFACE=eth0
       - TIMEOUT=-1
