@@ -11,13 +11,16 @@ void WOLAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
         return; // Not a WOL packet, exit
     }
 
+    pcpp::RawPacket* rawPacket = parsedPacket.getRawPacket();
+    timespec ts = rawPacket->getPacketTimeStamp();
+
     // Get the mac address of the source 
     pcpp::MacAddress sourceMacAddr = ethLayer->getSourceMac();
 
     // Get the mac address of the target in the WOL payload 
     pcpp::MacAddress targetMacAddrStr = pcpp::MacAddress(ethLayer->getLayerPayload() + 6);
 
-    // Add the source and target mac addresses to the set
-    wolSourceMacs.insert(sourceMacAddr);
-    wolTargetMacs.insert(targetMacAddrStr);
+    // Create a WOLData object
+    auto wolData = std::make_unique<WOLData>(ts, sourceMacAddr, targetMacAddrStr);
+    hostManager.updateHost(ProtocolType::WOL, std::move(wolData));
 }
