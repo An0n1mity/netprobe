@@ -105,6 +105,16 @@ struct ARPData : public ProtocolData {
         : ProtocolData(ProtocolType::ARP, ts), senderMac(mac), senderIp(sender), targetIp(target) {}
 };
 
+// Data structure for LLDP protocol
+/**
+ * @struct LLDPData
+ * @brief Data structure for LLDP protocol.
+ * 
+ * The LLDPData struct is a data structure for storing LLDP protocol data.
+ * It contains fields for the sender MAC address, port ID, port description,
+ * system name, and system description.
+ */
+
 struct LLDPData : public ProtocolData {
     pcpp::MacAddress senderMAC;
     std::string portID;
@@ -137,6 +147,15 @@ struct STPData : public ProtocolData {
             bridgeIdentifier(bridgeId) {}  // Initialize from parameter
 };
 
+// Data structure for SSDP protocol
+/**
+ * @struct SSDPData
+ * @brief Data structure for SSDP protocol.
+ * 
+ * The SSDPData struct is a data structure for storing SSDP protocol data.
+ * It contains fields for the sender MAC address, sender IP address, SSDP type,
+ * and SSDP headers.
+ */
 struct SSDPData : public ProtocolData {
     pcpp::MacAddress senderMAC;
     pcpp::IPv4Address senderIP;
@@ -148,6 +167,16 @@ struct SSDPData : public ProtocolData {
         : ProtocolData(ProtocolType::SSDP, ts), senderMAC(mac), senderIP(ip), ssdpType(type), ssdpHeaders(headers) {}
 };
 
+// Data structure for CDP protocol
+/**
+ * @struct CDPData
+ * @brief Data structure for CDP protocol.
+ * 
+ * The CDPData struct is a data structure for storing CDP protocol data.
+ * It contains fields for the sender MAC address, sender IP address, device ID,
+ * addresses, port ID, capabilities, software version, platform, VTP management domain,
+ * native VLAN, duplex, trust bitmap, untrusted port CoS, and management addresses.
+ */
 struct CDPData : public ProtocolData {
     pcpp::MacAddress senderMAC;
     pcpp::IPv4Address senderIP;
@@ -167,6 +196,22 @@ struct CDPData : public ProtocolData {
 
     CDPData(timespec ts, pcpp::MacAddress mac, CDPLayer cdpLayer)
         : ProtocolData(ProtocolType::CDP, ts), senderMAC(mac), deviceId(cdpLayer.getDeviceId()), addresses(cdpLayer.getAddresses()), portId(cdpLayer.getPortId()), capabilities(cdpLayer.getCapabilities()), capabilitiesStr(cdpLayer.capabilitiesToString(cdpLayer.getCapabilities())), softwareVersion(cdpLayer.getSoftwareVersion()), platform(cdpLayer.getPlatform()), vtpManagementDomain(cdpLayer.getVTPManagementDomain()), nativeVlan(cdpLayer.getNativeVlan()), duplex(cdpLayer.getDuplex()), trustBitmap(cdpLayer.getTrustBitmap()), untrustedPortCos(cdpLayer.getUntrustedPortCos()), mgmtAddresses(cdpLayer.getMgmtAddresses()) {}
+};
+
+// Data structure for WOL protocol
+/**
+ * @struct WOLData
+ * @brief Data structure for WOL protocol.
+ * 
+ * The WOLData struct is a data structure for storing WOL protocol data.
+ * It contains fields for the sender MAC address and target MAC address.
+ */
+struct WOLData : public ProtocolData {
+    pcpp::MacAddress senderMAC;
+    pcpp::MacAddress targetMAC;
+
+    WOLData(timespec ts, pcpp::MacAddress sender, pcpp::MacAddress target)
+        : ProtocolData(ProtocolType::WOL, ts), senderMAC(sender), targetMAC(target) {}
 };
 
 /**

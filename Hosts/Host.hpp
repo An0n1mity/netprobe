@@ -201,6 +201,14 @@ class Host {
                     cdpJson["MGMT ADDRESSES"] = mgmtAddressesJson;
                     protocolsJson["CDP"].append(cdpJson);
                 }
+                else if (protocol_data->protocol == ProtocolType::WOL) {
+                    WOLData* wol_data = static_cast<WOLData*>(protocol_data);
+                    Json::Value wolJson;
+                    wolJson["TIMESTAMP"] = dateToString(wol_data->timestamp);
+                    wolJson["SENDER MAC"] = wol_data->senderMAC.toString();
+                    wolJson["TARGET MAC"] = wol_data->targetMAC.toString();
+                    protocolsJson["WOL"].append(wolJson);
+                }
             }
         }
 

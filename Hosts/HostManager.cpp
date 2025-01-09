@@ -82,6 +82,13 @@ void HostManager::updateHost(ProtocolType protocol, std::unique_ptr<ProtocolData
             }
             break;
         }
+        case ProtocolType::WOL: {
+            WOLData* wolData = dynamic_cast<WOLData*>(data.get());
+            if (wolData) {
+                processHost(wolData->senderMAC, pcpp::IPv4Address::Zero, "", ProtocolType::WOL);
+            }
+            break;
+        }
     }
 }
 
