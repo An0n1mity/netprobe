@@ -32,7 +32,6 @@
  * of packets for different protocols.
  */
 
-virtual void analyzePacket(pcpp::Packet& packet) = 0;
 class Analyzer {
 public:
     Analyzer(HostManager& hostManager) : hostManager(hostManager) {}
