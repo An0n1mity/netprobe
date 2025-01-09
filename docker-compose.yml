@@ -16,4 +16,4 @@ services:
     environment:
       - INTERFACE=eth0
       - TIMEOUT=-1
-    command: ["./build/cartographie-passive"]
+    command: ["./build/netprobe"]

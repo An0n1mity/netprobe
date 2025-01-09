@@ -30,6 +30,6 @@ file(GLOB_RECURSE sources
     "Hosts/*.cpp"
 )
 
-add_executable(cartographie-passive ${sources})
+add_executable(netprobe ${sources})
 
-target_link_libraries(cartographie-passive ${PCAP_LIBRARY} ${JSONCPP_LIBRARIES} Pcap++ Packet++ Common++ pcap pthread ${Boost_LIBRARIES})
+target_link_libraries(netprobe ${PCAP_LIBRARY} ${JSONCPP_LIBRARIES} Pcap++ Packet++ Common++ pcap pthread ${Boost_LIBRARIES})
