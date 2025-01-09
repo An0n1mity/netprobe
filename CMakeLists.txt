@@ -25,6 +25,8 @@ file(GLOB_RECURSE sources
     "Analyzers/WOL/*.cpp"
     "Layers/LLDP/*.cpp"
     "Layers/STP/*.cpp"
+    "Layers/SSDP/*.cpp"
+    "Layers/CDP/*.cpp"
     "Hosts/*.cpp"
 )
 
