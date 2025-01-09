@@ -8,6 +8,7 @@
 #include "../Layers/CDP/CDPLayer.hpp"
 #include <string>
 #include <ctime>
+#include <unordered_set>
 
 enum class ProtocolType {
     DHCP,
@@ -18,6 +19,14 @@ enum class ProtocolType {
     CDP,
     STP,
     WOL
+};
+
+// Hash function for std::pair
+struct PairHash {
+    template <typename T1, typename T2>
+    std::size_t operator()(const std::pair<T1, T2>& pair) const {
+        return std::hash<T1>()(pair.first) ^ std::hash<T2>()(pair.second);
+    }
 };
 
 // Base class for protocol data
@@ -265,11 +274,49 @@ struct ProtocolDataComparator {
         }
 
         if (lhs->getProtocolType() == ProtocolType::SSDP) {
-            const SSDPData* lhsData = static_cast<const SSDPData*>(lhs.get());
-            const SSDPData* rhsData = static_cast<const SSDPData*>(rhs.get());
-            return lhsData->senderMAC != rhsData->senderMAC || lhsData->senderIP != rhsData->senderIP || std::equal(lhsData->ssdpHeaders.begin(), lhsData->ssdpHeaders.end(), rhsData->ssdpHeaders.begin());
+    const SSDPData* lhsData = static_cast<const SSDPData*>(lhs.get());
+    const SSDPData* rhsData = static_cast<const SSDPData*>(rhs.get());
+
+    // Compare sender MAC and IP
+    if (lhsData->senderMAC != rhsData->senderMAC || lhsData->senderIP != rhsData->senderIP) {
+        return true;
+    }
+
+    // Compare ssdpHeaders as unordered sets
+    std::unordered_multiset<std::pair<std::string, std::string>, PairHash> lhsHeaders(lhsData->ssdpHeaders.begin(), lhsData->ssdpHeaders.end());
+    std::unordered_multiset<std::pair<std::string, std::string>, PairHash> rhsHeaders(rhsData->ssdpHeaders.begin(), rhsData->ssdpHeaders.end());
+
+    if (lhsHeaders != rhsHeaders) {
+        return true;
+    }
+
+    return false;
+}
+
+        if (lhs->getProtocolType() == ProtocolType::CDP) {
+            const CDPData* lhsData = static_cast<const CDPData*>(lhs.get());
+            const CDPData* rhsData = static_cast<const CDPData*>(rhs.get());
+            // compare all addresses in the vector using the operator== defined above
+            return lhsData->senderMAC != rhsData->senderMAC || lhsData->deviceId.subtype != rhsData->deviceId.subtype || lhsData->deviceId.id != rhsData->deviceId.id ||
+                   lhsData->addresses.addresses.size() != rhsData->addresses.addresses.size() || !std::equal(lhsData->addresses.addresses.begin(), lhsData->addresses.addresses.end(), rhsData->addresses.addresses.begin()) ||
+                     lhsData->portId != rhsData->portId || lhsData->capabilities != rhsData->capabilities || lhsData->capabilitiesStr != rhsData->capabilitiesStr ||
+                        lhsData->softwareVersion != rhsData->softwareVersion || lhsData->platform != rhsData->platform || lhsData->vtpManagementDomain != rhsData->vtpManagementDomain ||
+                        lhsData->nativeVlan != rhsData->nativeVlan || lhsData->duplex != rhsData->duplex || lhsData->trustBitmap != rhsData->trustBitmap || lhsData->untrustedPortCos != rhsData->untrustedPortCos ||
+                        lhsData->mgmtAddresses.addresses.size() != rhsData->mgmtAddresses.addresses.size() || !std::equal(lhsData->mgmtAddresses.addresses.begin(), lhsData->mgmtAddresses.addresses.end(), rhsData->mgmtAddresses.addresses.begin());
         }
-        
+
+        if (lhs->getProtocolType() == ProtocolType::LLDP) {
+            const LLDPData* lhsData = static_cast<const LLDPData*>(lhs.get());
+            const LLDPData* rhsData = static_cast<const LLDPData*>(rhs.get());
+            return lhsData->senderMAC != rhsData->senderMAC || lhsData->portID != rhsData->portID || lhsData->portDescription != rhsData->portDescription ||
+                   lhsData->systemName != rhsData->systemName || lhsData->systemDescription != rhsData->systemDescription;
+        }
+
+        if (lhs->getProtocolType() == ProtocolType::WOL) {
+            const WOLData* lhsData = static_cast<const WOLData*>(lhs.get());
+            const WOLData* rhsData = static_cast<const WOLData*>(rhs.get());
+            return lhsData->senderMAC != rhsData->senderMAC || lhsData->targetMAC != rhsData->targetMAC;
+        }
 
         return false; // Fallback case
     }
