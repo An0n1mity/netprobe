@@ -18,19 +18,6 @@ void ARPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
     pcpp::RawPacket* rawPacket = parsedPacket.getRawPacket();
     timespec ts = rawPacket->getPacketTimeStamp();
 
-    // Check and add to the appropriate set if the IP is not already present
-    if (srcMac != pcpp::MacAddress::Zero) {
-        senderMacs.insert(srcMac);
-    }
-    
-    if (!srcIp.isZero()) {
-        senderIPs.insert(srcIp);
-    }
-
-    if (!dstIp.isZero()) {
-        targetIPs.insert(dstIp);
-    }
-
     // Update the host manager with the ARP data
     auto arpData = std::make_unique<ARPData>(ts, srcMac, srcIp, dstIp);
     hostManager.updateHost(ProtocolType::ARP, std::move(arpData));

@@ -18,10 +18,7 @@
  * The DNSAnalyzer class overrides the analyzePacket method from the base Analyzer class to handle DNS packets.
  */
 class mDNSAnalyzer : public Analyzer {
-
-private:
-    std::map<std::string, std::string> hostnameMap;
-
+    
 public:
     mDNSAnalyzer(HostManager& hostManager) : Analyzer(hostManager) {}
     void analyzePacket(pcpp::Packet& parsedPacket) override;

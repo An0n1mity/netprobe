@@ -24,9 +24,6 @@ void LLDPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
 
     // LLDP uses a special EtherType (0x88cc)
     LLDPLayer lldpLayer(ethLayer->getLayerPayload(), ethLayer->getLayerPayloadSize());
-    
-    // Print the LLDP information
-    std::cout << lldpLayer << std::endl;
 
     // Extract the sender MAC address and system name
     pcpp::MacAddress senderMac = ethLayer->getSourceMac();

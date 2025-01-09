@@ -33,27 +33,6 @@ void DHCPAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
     pcpp::RawPacket* rawPacket = parsedPacket.getRawPacket();
     timespec ts = rawPacket->getPacketTimeStamp();
 
-    // Check and add to the appropriate set if the IP is not already present
-    if (clientMac != pcpp::MacAddress::Zero) {
-        clientsMacs.insert(clientMac);
-    }
-
-    if (!ipAddress.isZero()) {
-        clientsIps.insert(ipAddress);
-    }
-
-    if (!dhcpServerIp.isZero()) {
-        dhcpServerIps.insert(dhcpServerIp);
-    }
-
-    if (!gatewayIp.isZero()) { 
-        gatewayIps.insert(gatewayIp);
-    }
-
-    if (!dnsServerIp.isZero()) {
-        dnsServerIps.insert(dnsServerIp);
-    }
-
     // Update the host manager with the DHCP data
     auto dhcpData = std::make_unique<DHCPData>(ts, clientMac, ipAddress, "", dhcpServerIp, gatewayIp, dnsServerIp);
     hostManager.updateHost(ProtocolType::DHCP, std::move(dhcpData));

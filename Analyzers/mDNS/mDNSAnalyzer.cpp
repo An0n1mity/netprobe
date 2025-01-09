@@ -42,5 +42,9 @@ void mDNSAnalyzer::analyzePacket(pcpp::Packet& parsedPacket) {
     }
 
     pcpp::RawPacket* rawPacket = parsedPacket.getRawPacket();
-    timespec ts = rawPacket->getPacketTimeStamp();    
+    timespec ts = rawPacket->getPacketTimeStamp();  
+
+    // Update the host manager with the mDNS data
+    auto mdnsData = std::make_unique<mDNSData>(ts, queriedDomain, srcMac, hostname, ipAddress);
+    hostManager.updateHost(ProtocolType::MDNS, std::move(mdnsData));
 }
