@@ -140,6 +140,6 @@ private:
 
 std::string toHexString(const uint8_t* data, size_t length);
 std::string getAddressString(struct CDPLayer::Address address);
-
+bool operator==(const CDPLayer::Address& lhs, const CDPLayer::Address& rhs);
 
 #endif // CDPLAYER_HPP

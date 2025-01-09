@@ -290,3 +290,11 @@ std::string getAddressString(struct CDPLayer::Address address) {
         return toHexString(address.address, address.addressLength);
     }
 }
+
+bool operator==(const CDPLayer::Address& lhs, const CDPLayer::Address& rhs) {
+    return lhs.protocolType == rhs.protocolType &&
+           lhs.protocolLength == rhs.protocolLength &&
+           lhs.protocol == rhs.protocol &&
+           lhs.addressLength == rhs.addressLength &&
+           std::equal(lhs.address, lhs.address + lhs.addressLength, rhs.address);
+}
