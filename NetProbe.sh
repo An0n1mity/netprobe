@@ -114,7 +114,7 @@ catch_entry() {
 To use NetProbe, following paquets must be installed:
 - iptables or ufw
 - python3 and pip
-- docker
+- docker and docker-compose
 
 \n Commands list: \n n: Start NetProbe application \n b: Block outgoing network trafic with firewall (debug) \n d: Delete container and image \n u: Unblock outgoing network trafic with firewall (debug) \n r: Generate report of the informations gathered until now \n q: Quit NetProbe. Attention: Leaving by any other mean will keep NetProbe running in background and won't restore network trafic on the machine."
     while true; do
