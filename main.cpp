@@ -35,7 +35,7 @@ void rearm_sigusr1(boost::asio::signal_set& signals, std::atomic<bool>& dumpHost
 }
 
 int main() {
-    loadVendorDatabase("./build/manuf", vendorDatabase);
+    loadVendorDatabase("/netprobe/build/manuf", vendorDatabase);
 
     // Get the network interface from environment variable
     const char* interfaceEnv = "eth0";
@@ -117,6 +117,9 @@ int main() {
                 // Dump hosts to file if the atomic flag is set
                 if (dumpHosts) {
                     hostManager.dumpHostsToFile("/netprobe/output/hosts.json");
+                    #ifdef DEBUG
+                    std::cout << hostManager.getHostsJson() << std::endl;
+                    #endif
                     dumpHosts = false;
                 }
                 std::this_thread::sleep_for(std::chrono::seconds(1));
