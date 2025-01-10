@@ -6,6 +6,18 @@ CONTAINER_VOLUME_PATH="/usr/src/app/Output"
 COMPOSE_FILE="$SCRIPT_DIR/docker-compose.yml"
 cd $SCRIPT_DIR
 
+# Vérification de la commande docker compose
+if docker compose version >/dev/null 2>&1; then
+    echo "Docker Compose v2 est disponible."
+    DOCKER_COMPOSE_VERSION=false
+elif docker-compose -v >/dev/null 2>&1; then
+    echo "Docker Compose v1 est disponible."
+    DOCKER_COMPOSE_VERSION=true
+else
+    echo "Aucune version de Docker Compose n'est disponible sur ce système."
+    exit 1
+fi
+
 check_and_install_requirements() {
     # Check for iptables or ufw
     if ! command -v iptables &> /dev/null && ! command -v ufw &> /dev/null; then
@@ -31,12 +43,6 @@ check_and_install_requirements() {
         exit 1
     fi
 
-    # Check for docker-compose
-    if ! command -v docker compose &> /dev/null; then
-        echo "docker-compose is required but not installed. Please install docker-compose."
-        exit 1
-    fi
-
     # Install Python dependencies
     echo "Installing Python dependencies..."
     pip install -r requirements.txt
@@ -54,51 +60,36 @@ detect_firewall() {
     fi
 }
 
-# Fonction pour bloquer le trafic sortant
-block_outgoing() {
-    case $FIREWALL in
-        ufw)
-            ufw default deny outgoing 
-	    ufw reload
-            echo "Outgoing trafic blocked with ufw."
-            ;;
-        iptables)
-            iptables -A OUTPUT -j DROP
-            echo "Outgoing trafic blocked with iptables."
-            ;;
-    esac
-}
-
-# Fonction pour débloquer le trafic sortant
-unblock_outgoing() {
-    case $FIREWALL in
-        ufw)
-            ufw default allow outgoing
-            ufw reload
-            echo "Outgoing trafic restored with ufw."
-            ;;
-        iptables)
-            iptables -D OUTPUT -j DROP
-            echo "Outgoing trafic restored with iptables."
-            ;;
-    esac
-}
-
 # Fonction pour gérer l'image et le conteneur Docker
 manage_docker() {
 
-    # Vérifie si le fichier docker-compose.yml existe
-    if [ ! -f "$COMPOSE_FILE" ]; then
-        echo -e "\nDocker Compose file not found. Please ensure $COMPOSE_FILE exists."
-        exit 1
+    if [ "$DOCKER_COMPOSE_VERSION" = true ]; then
+    	if [ ! -f "$COMPOSE_FILE" ]; then
+	    echo -e "\nDocker Compose file not found. Please ensure $COMPOSE_FILE exists."
+	    exit 1
+    	fi
+    	
+    	echo -e "\nStarting NetProbe using Docker Compose..."
+    	docker-compose -f $COMPOSE_FILE build
+    	docker-compose -f $COMPOSE_FILE up
+    	
+    	# Set the network interface to promiscuous mode
+    	docker-compose -f $COMPOSE_FILE exec netprobe ip link set enp0s2 promisc
+    	echo -e '\nNetProbe started.'
+    else
+    	# Vérifie si le fichier docker-compose.yml existe
+        if [ ! -f "$COMPOSE_FILE" ]; then
+	    echo -e "\nDocker Compose file not found. Please ensure $COMPOSE_FILE exists."
+	    exit 1
+    	fi
+
+    	echo -e "\nStarting NetProbe using Docker Compose..."
+    	docker compose -f $COMPOSE_FILE up -d --build
+
+    	# Set the network interface to promiscuous mode
+    	docker compose -f $COMPOSE_FILE exec netprobe ip link set enp0s2 promisc
+    	echo -e '\nNetProbe started.'
     fi
-
-    echo -e "\nStarting NetProbe using Docker Compose..."
-    docker compose -f $COMPOSE_FILE up -d --build
-
-    # Set the network interface to promiscuous mode
-    docker compose -f $COMPOSE_FILE exec netprobe ip link set enp0s2 promisc
-    echo -e '\nNetProbe started.'
 }
 
 # Fonction principale pour interagir avec l'utilisateur
@@ -116,30 +107,31 @@ To use NetProbe, following paquets must be installed:
 - python3 and pip
 - docker
 
-\n Commands list: \n n: Start NetProbe application \n b: Block outgoing network trafic with firewall (debug) \n d: Delete container and image \n u: Unblock outgoing network trafic with firewall (debug) \n r: Generate report of the informations gathered until now \n q: Quit NetProbe. Attention: Leaving by any other mean will keep NetProbe running in background and won't restore network trafic on the machine."
+\n Commands list: \n n: Start NetProbe application \n d: Delete container and image \n r: Generate report of the informations gathered until now \n q: Quit NetProbe. Attention: Leaving by any other mean will keep NetProbe running in background and won't restore network trafic on the machine."
     while true; do
         read -n 1 -s key  # Lecture d'une seule touche sans besoin de validation avec Entrée
         case $key in
-            b)
-                block_outgoing
-                ;;
             d)
             	echo -e "\nRemove NetProbe container and image..."
-            	docker compose down
+            	if [ "$DOCKER_COMPOSE_VERSION" = true ]; then
+            	    docker-compose down
+            	else
+            	    docker compose down
+            	fi
+            	docker rmi netprobe-image
             	echo -e "\nNetProbe container and image removed successfully."
             	;;
-            u)
-                unblock_outgoing
-                ;;
             n)
                 check_and_install_requirements
-            	block_outgoing
                 manage_docker
                 ;;
             q)
             	echo -e "\nStopping NetProbe ..."
-            	docker compose stop
-            	unblock_outgoing
+            	if [ "$DOCKER_COMPOSE_VERSION" = true ]; then
+            	    docker-compose stop
+            	else
+            	    docker compose stop
+            	fi
                 break
                 ;;
             r) 
@@ -149,7 +141,7 @@ To use NetProbe, following paquets must be installed:
              	echo -e "\nReport created."
              	;;
             *)
-                echo -e "\nUnknown command. Commands list: \n n: Start NetProbe application \n b: Block outgoing network trafic with firewall (debug) \n d: Delete container and image \n u: Unblock outgoing network trafic with firewall (debug) \n r: Generate report of the informations gathered until now \n q: Quit NetProbe. Attention: Leaving by any other mean will keep NetProbe running in background and won't restore network trafic on the machine."
+                echo -e "\nUnknown command. Commands list: \n n: Start NetProbe application \n d: Delete container and image \n r: Generate report of the informations gathered until now \n q: Quit NetProbe. Attention: Leaving by any other mean will keep NetProbe running in background and won't restore network trafic on the machine."
                 ;;
         esac
     done
@@ -164,4 +156,3 @@ fi
 # Détecte le pare-feu et lance l'interaction
 detect_firewall
 catch_entry
-

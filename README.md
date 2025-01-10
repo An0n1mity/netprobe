@@ -18,7 +18,7 @@
 ## Getting Started with Script
 
 ### Prerequisites
-- Docker
+- Docker and docker-compose
 - python and pip
 - iptables or ufw
 
