@@ -1,0 +1,206 @@
+[
+    {
+        "MAC": "00:11:22:33:44:55",
+        "IP": "192.168.1.1",
+        "HOSTNAME": "Router1",
+        "VENDOR": "Cisco",
+        "FIRST SEEN": "11-01-2024 10:00:00",
+        "LAST SEEN": "11-01-2024 12:00:00",
+        "PROTOCOLS": {
+            "DHCP": [
+                {
+                    "SERVER": "192.168.1.254",
+                    "LEASE TIME": "24 hours"
+                }
+            ]
+        }
+    },
+    {
+        "MAC": "AA:BB:CC:DD:EE:FF",
+        "IP": "192.168.1.2",
+        "HOSTNAME": "Switch1",
+        "VENDOR": "HP",
+        "FIRST SEEN": "11-02-2024 08:00:00",
+        "LAST SEEN": "11-18-2024 15:30:00",
+        "PROTOCOLS": {
+            "LLDP": [
+                {
+                    "NEIGHBOR DEVICE": "Router1",
+                    "PORT": "GigabitEthernet0/1"
+                }
+            ]
+        }
+    },
+    {
+        "MAC": "12:34:56:78:90:AB",
+        "IP": "192.168.1.3",
+        "FIRST SEEN": "03-11-2024 09:15:00",
+        "LAST SEEN": "18-11-2024 14:45:00",
+        "VENDOR": "Dell",
+        "PROTOCOLS": {
+            "ARP": [
+                {
+                    "TARGET IP": "192.168.1.1",
+                    "RESOLVED MAC": "00:11:22:33:44:55"
+                }
+            ]
+        }
+    },
+    {
+        "MAC": "98:76:54:32:10:FF",
+        "IP": "192.168.1.4",
+        "HOSTNAME": "Laptop1",
+        "FIRST SEEN": "04-11-2024 11:30:00",
+        "LAST SEEN": "18-11-2024 16:00:00",
+        "PROTOCOLS": {}
+    },
+    {
+        "MAC": "11:22:33:44:55:66",
+        "IP": "192.168.1.5",
+        "VENDOR": "Lenovo",
+        "FIRST SEEN": "05-11-2024 12:45:00",
+        "LAST SEEN": "18-11-2024 12:00:00",
+        "PROTOCOLS": {}
+    },
+    {
+        "MAC": "22:33:44:55:66:77",
+        "IP": "192.168.1.6",
+        "HOSTNAME": "Printer1",
+        "VENDOR": "HP",
+        "FIRST SEEN": "06-11-2024 13:00:00",
+        "LAST SEEN": "18-11-2024 14:30:00",
+        "PROTOCOLS": {
+            "SNMP": [
+                {
+                    "COMMUNITY": "public",
+                    "LOCATION": "Office"
+                }
+            ]
+        }
+    },
+    {
+        "MAC": "33:44:55:66:77:88",
+        "IP": "192.168.1.7",
+        "FIRST SEEN": "07-11-2024 14:15:00",
+        "LAST SEEN": "18-11-2024 15:45:00",
+        "PROTOCOLS": {}
+    },
+    {
+        "MAC": "44:55:66:77:88:99",
+        "IP": "192.168.1.8",
+        "HOSTNAME": "AccessPoint1",
+        "FIRST SEEN": "08-11-2024 15:30:00",
+        "LAST SEEN": "18-11-2024 17:00:00",
+        "PROTOCOLS": {
+            "WIFI": [
+                {
+                    "SSID": "OfficeNetwork",
+                    "SECURITY": "WPA2"
+                }
+            ]
+        }
+    },
+    {
+        "MAC": "55:66:77:88:99:AA",
+        "IP": "192.168.1.9",
+        "VENDOR": "Ubiquiti",
+        "FIRST SEEN": "09-11-2024 16:45:00",
+        "LAST SEEN": "18-11-2024 18:30:00",
+        "PROTOCOLS": {}
+    },
+    {
+        "MAC": "66:77:88:99:AA:BB",
+        "IP": "192.168.1.10",
+        "HOSTNAME": "Server1",
+        "VENDOR": "Dell",
+        "FIRST SEEN": "10-11-2024 17:00:00",
+        "LAST SEEN": "18-11-2024 19:15:00",
+        "PROTOCOLS": {
+            "HTTP": [
+                {
+                    "PORT": "80",
+                    "SERVER": "Apache"
+                }
+            ]
+        }
+    },
+    {
+        "MAC": "77:88:99:AA:BB:CC",
+        "FIRST SEEN": "11-11-2024 18:15:00",
+        "LAST SEEN": "18-11-2024 20:30:00",
+        "VENDOR": "Microsoft",
+        "PROTOCOLS": {
+            "RDP": [
+                {
+                    "PORT": "3389",
+                    "SECURITY": "TLS"
+                }
+            ]
+        }
+    },
+    {
+        "MAC": "88:99:AA:BB:CC:DD",
+        "IP": "192.168.1.12",
+        "FIRST SEEN": "12-11-2024 19:30:00",
+        "LAST SEEN": "18-11-2024 21:45:00",
+        "VENDOR": "ASUS",
+        "PROTOCOLS": {}
+    },
+    {
+        "MAC": "99:AA:BB:CC:DD:EE",
+        "FIRST SEEN": "13-11-2024 20:45:00",
+        "LAST SEEN": "21-11-2024 22:00:00",
+        "PROTOCOLS": {}
+    },
+    {
+        "MAC": "AA:BB:CC:DD:EE:FF",
+        "FIRST SEEN": "14-11-2024 21:00:00",
+        "LAST SEEN": "21-11-2024 23:15:00",
+        "HOSTNAME": "SmartTV1",
+        "PROTOCOLS": {
+            "DLNA": [
+                {
+                    "DEVICE TYPE": "MediaRenderer",
+                    "MANUFACTURER": "Samsung"
+                }
+            ]
+        }
+    },
+    {
+        "MAC": "BB:CC:DD:EE:FF:00",
+        "IP": "192.168.1.15",
+        "FIRST SEEN": "15-11-2024 22:15:00",
+        "LAST SEEN": "18-11-2024 23:45:00",
+        "PROTOCOLS": {
+            "NTP": [
+                {
+                    "SERVER": "time.google.com",
+                    "OFFSET": "0.25ms"
+                }
+            ]
+        }
+    },
+    {
+        "MAC": "CC:DD:EE:FF:00:11",
+        "FIRST SEEN": "16-11-2024 23:30:00",
+        "LAST SEEN": "18-11-2024 00:15:00",
+        "VENDOR": "TP-Link",
+        "PROTOCOLS": {}
+    },
+    {
+        "MAC": "DD:EE:FF:00:11:22",
+        "IP": "192.168.1.17",
+        "HOSTNAME": "NAS1",
+        "VENDOR": "Synology",
+        "FIRST SEEN": "17-11-2024 00:45:00",
+        "LAST SEEN": "18-11-2024 01:15:00",
+        "PROTOCOLS": {
+            "SMB": [
+                {
+                    "SHARES": "Public, Private",
+                    "SECURITY": "Encrypted"
+                }
+            ]
+        }
+    }
+]

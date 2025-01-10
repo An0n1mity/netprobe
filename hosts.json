@@ -1,0 +1,553 @@
+[
+	{
+		"FIRST SEEN" : "09-01-2025 11:18:13",
+		"HOSTNAME" : "",
+		"IP" : "192.168.42.66",
+		"LAST SEEN" : "09-01-2025 11:18:13",
+		"MAC" : "70:18:8B:F7:95:E1 (Unknown Vendor)",
+		"PROTOCOLS" : 
+		{
+			"ARP" : 
+			[
+				{
+					"SENDER IP" : "192.168.42.66",
+					"SENDER MAC" : "70:18:8b:f7:95:e1",
+					"TARGET IP" : "192.168.42.1",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				}
+			],
+			"DHCP" : 
+			[
+				{
+					"CLIENT MAC" : "70:18:8b:f7:95:e1",
+					"DHCP SERVER IP" : "0.0.0.0",
+					"DNS SERVER IP" : "0.0.0.0",
+					"GATEWAY IP" : "0.0.0.0",
+					"HOSTNAME" : "",
+					"IP" : "0.0.0.0",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				}
+			],
+			"SSDP" : 
+			[
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:Microsoft Windows Peer Name Resolution Protocol: V4:IPV6:LinkLocal\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:Microsoft Windows Peer Name Resolution Protocol: V4:IPV6:LinkLocal\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:Microsoft Windows Peer Name Resolution Protocol: V4:IPV6:LinkLocal\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "239.255.255.250:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:schemas-upnp-org:device:InternetGatewayDevice:1\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				}
+			]
+		}
+	},
+	{
+		"FIRST SEEN" : "09-01-2025 11:18:13",
+		"HOSTNAME" : "",
+		"IP" : "192.168.42.67",
+		"LAST SEEN" : "09-01-2025 11:18:13",
+		"MAC" : "A4:DB:30:FE:B9:BA (Unknown Vendor)",
+		"PROTOCOLS" : 
+		{
+			"ARP" : 
+			[
+				{
+					"SENDER IP" : "192.168.42.67",
+					"SENDER MAC" : "a4:db:30:fe:b9:ba",
+					"TARGET IP" : "192.168.42.72",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.67",
+					"SENDER MAC" : "a4:db:30:fe:b9:ba",
+					"TARGET IP" : "192.168.42.71",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.67",
+					"SENDER MAC" : "a4:db:30:fe:b9:ba",
+					"TARGET IP" : "192.168.42.1",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				}
+			],
+			"DHCP" : 
+			[
+				{
+					"CLIENT MAC" : "a4:db:30:fe:b9:ba",
+					"DHCP SERVER IP" : "0.0.0.0",
+					"DNS SERVER IP" : "0.0.0.0",
+					"GATEWAY IP" : "0.0.0.0",
+					"HOSTNAME" : "",
+					"IP" : "0.0.0.0",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				}
+			],
+			"SSDP" : 
+			[
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:schemas-upnp-org:device:MediaServer:1\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "239.255.255.250:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:schemas-upnp-org:device:MediaRenderer:1\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:Microsoft Windows Peer Name Resolution Protocol: V4:IPV6:LinkLocal\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:schemas-upnp-org:device:MediaServer:1\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:schemas-upnp-org:device:MediaRenderer:1\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:Microsoft Windows Peer Name Resolution Protocol: V4:IPV6:LinkLocal\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "239.255.255.250:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:schemas-upnp-org:device:MediaServer:1\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:schemas-upnp-org:device:MediaServer:1\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "239.255.255.250:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:schemas-upnp-org:device:MediaRenderer:1\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:schemas-upnp-org:device:MediaRenderer:1\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:Microsoft Windows Peer Name Resolution Protocol: V4:IPV6:LinkLocal\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:Microsoft Windows Peer Name Resolution Protocol: V4:IPV6:LinkLocal\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "239.255.255.250:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:schemas-upnp-org:device:InternetGatewayDevice:1\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				},
+				{
+					"HEADERS" : 
+					{
+						"Host" : "[FF02::C]:1900\r",
+						"MX" : "3\r",
+						"Man" : "\"ssdp:discover\"\r",
+						"ST" : "urn:Microsoft Windows Peer Name Resolution Protocol: V4:IPV6:LinkLocal\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "M-SEARCH"
+				}
+			]
+		}
+	},
+	{
+		"FIRST SEEN" : "09-01-2025 11:18:13",
+		"HOSTNAME" : "",
+		"IP" : "192.168.42.1",
+		"LAST SEEN" : "09-01-2025 11:18:13",
+		"MAC" : "B8:E6:25:57:29:41 (Unknown Vendor)",
+		"PROTOCOLS" : 
+		{
+			"ARP" : 
+			[
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.69",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.67",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.70",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.69",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.64",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.70",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.71",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.69",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.67",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.64",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.72",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.71",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.70",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.69",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.68",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.64",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.65",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"SENDER IP" : "192.168.42.1",
+					"SENDER MAC" : "b8:e6:25:57:29:41",
+					"TARGET IP" : "192.168.42.66",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				}
+			]
+		}
+	},
+	{
+		"FIRST SEEN" : "09-01-2025 11:18:13",
+		"HOSTNAME" : "",
+		"IP" : "192.168.42.70",
+		"LAST SEEN" : "09-01-2025 11:18:13",
+		"MAC" : "08:00:28:57:F5:E2 (Unknown Vendor)",
+		"PROTOCOLS" : 
+		{
+			"DHCP" : 
+			[
+				{
+					"CLIENT MAC" : "08:00:28:57:f5:e2",
+					"DHCP SERVER IP" : "192.168.42.1",
+					"DNS SERVER IP" : "0.0.0.0",
+					"GATEWAY IP" : "0.0.0.0",
+					"HOSTNAME" : "",
+					"IP" : "192.168.42.70",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"CLIENT MAC" : "08:00:28:57:f5:e2",
+					"DHCP SERVER IP" : "192.168.42.1",
+					"DNS SERVER IP" : "192.168.42.1",
+					"GATEWAY IP" : "192.168.42.1",
+					"HOSTNAME" : "",
+					"IP" : "0.0.0.0",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				},
+				{
+					"CLIENT MAC" : "08:00:28:57:f5:e2",
+					"DHCP SERVER IP" : "0.0.0.0",
+					"DNS SERVER IP" : "0.0.0.0",
+					"GATEWAY IP" : "0.0.0.0",
+					"HOSTNAME" : "",
+					"IP" : "0.0.0.0",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				}
+			]
+		}
+	},
+	{
+		"FIRST SEEN" : "09-01-2025 11:18:13",
+		"HOSTNAME" : "",
+		"IP" : "0.0.0.0",
+		"LAST SEEN" : "09-01-2025 11:18:13",
+		"MAC" : "00:17:88:10:FA:C2 (Unknown Vendor)",
+		"PROTOCOLS" : 
+		{
+			"SSDP" : 
+			[
+				{
+					"HEADERS" : 
+					{
+						"CACHE-CONTROL" : " max-age=100\r",
+						"HOST" : " 239.255.255.250:1900\r",
+						"LOCATION" : " http://192.168.42.65:80/description.xml\r",
+						"NT" : " urn:schemas-upnp-org:device:basic:1\r",
+						"NTS" : " ssdp:alive\r",
+						"SERVER" : " FreeRTOS/6.0.5, UPnP/1.0, IpBridge/0.1\r",
+						"USN" : " uuid:2f402f80-da50-11e1-9b23-00178810fac2\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "NOTIFY"
+				},
+				{
+					"HEADERS" : 
+					{
+						"CACHE-CONTROL" : " max-age=100\r",
+						"HOST" : " 239.255.255.250:1900\r",
+						"LOCATION" : " http://192.168.42.65:80/description.xml\r",
+						"NT" : " uuid:2f402f80-da50-11e1-9b23-00178810fac2\r",
+						"NTS" : " ssdp:alive\r",
+						"SERVER" : " FreeRTOS/6.0.5, UPnP/1.0, IpBridge/0.1\r",
+						"USN" : " uuid:2f402f80-da50-11e1-9b23-00178810fac2\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "NOTIFY"
+				},
+				{
+					"HEADERS" : 
+					{
+						"CACHE-CONTROL" : " max-age=100\r",
+						"HOST" : " 239.255.255.250:1900\r",
+						"LOCATION" : " http://192.168.42.65:80/description.xml\r",
+						"NT" : " upnp:rootdevice\r",
+						"NTS" : " ssdp:alive\r",
+						"SERVER" : " FreeRTOS/6.0.5, UPnP/1.0, IpBridge/0.1\r",
+						"USN" : " uuid:2f402f80-da50-11e1-9b23-00178810fac2::upnp:rootdevice\r"
+					},
+					"TIMESTAMP" : "09-01-2025 11:18:13",
+					"TYPE" : "NOTIFY"
+				}
+			]
+		}
+	},
+	{
+		"FIRST SEEN" : "09-01-2025 11:18:13",
+		"HOSTNAME" : "",
+		"IP" : "192.168.42.71",
+		"LAST SEEN" : "09-01-2025 11:18:13",
+		"MAC" : "00:26:08:EC:D5:B8 (Unknown Vendor)",
+		"PROTOCOLS" : 
+		{
+			"ARP" : 
+			[
+				{
+					"SENDER IP" : "192.168.42.71",
+					"SENDER MAC" : "00:26:08:ec:d5:b8",
+					"TARGET IP" : "169.254.29.149",
+					"TIMESTAMP" : "09-01-2025 11:18:13"
+				}
+			]
+		}
+	},
+	{
+		"FIRST SEEN" : "09-01-2025 11:18:15",
+		"HOSTNAME" : "",
+		"IP" : "172.28.192.1",
+		"LAST SEEN" : "09-01-2025 11:18:15",
+		"MAC" : "00:15:5D:89:94:90 (Unknown Vendor)",
+		"PROTOCOLS" : 
+		{
+			"ARP" : 
+			[
+				{
+					"SENDER IP" : "172.28.192.1",
+					"SENDER MAC" : "00:15:5d:89:94:90",
+					"TARGET IP" : "172.28.202.173",
+					"TIMESTAMP" : "09-01-2025 11:18:15"
+				}
+			]
+		}
+	},
+	{
+		"FIRST SEEN" : "09-01-2025 11:18:15",
+		"HOSTNAME" : "",
+		"IP" : "172.28.202.173",
+		"LAST SEEN" : "09-01-2025 11:18:15",
+		"MAC" : "00:15:5D:DA:9D:38 (Unknown Vendor)",
+		"PROTOCOLS" : 
+		{
+			"ARP" : 
+			[
+				{
+					"SENDER IP" : "172.28.202.173",
+					"SENDER MAC" : "00:15:5d:da:9d:38",
+					"TARGET IP" : "172.28.192.1",
+					"TIMESTAMP" : "09-01-2025 11:18:15"
+				}
+			]
+		}
+	}
+]

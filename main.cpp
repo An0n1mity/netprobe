@@ -38,7 +38,7 @@ int main() {
     loadVendorDatabase("/netprobe/build/manuf", vendorDatabase);
 
     // Get the network interface from environment variable
-    const char* interfaceEnv = "eth0";
+    const char* interfaceEnv = getenv("INTERFACE");
     if (!interfaceEnv) {
         std::cerr << "Error: INTERFACE environment variable is not set." << std::endl;
         return 1;
