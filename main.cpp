@@ -17,7 +17,7 @@
 #include "Analyzers/LLDP/LLDPAnalyzer.hpp"
 #include "Analyzers/WOL/WOLAnalyzer.hpp"
 #include "Hosts/HostManager.hpp"
-#include <atomic> // For atomic flag
+#include <atomic>
 
 void rearm_sigusr1(boost::asio::signal_set& signals, std::atomic<bool>& dumpHosts) {
     // Asynchronously wait for SIGUSR1 signal
@@ -50,7 +50,7 @@ int main() {
     // Atomic flag for the infinite loop to dump hosts
     std::atomic<bool> dumpHosts(false);
     // Get the timeout duration from environment variable
-    const char* durationEnv = "5";
+    const char* durationEnv = getenv("TIMEOUT");
     if (!durationEnv) {
         std::cerr << "Error: TIMEOUT environment variable is not set." << std::endl;
         return 1;
@@ -80,8 +80,6 @@ int main() {
 
     // Start the IO context in a separate thread
     std::thread io_thread([&io_context]() { io_context.run(); });
-    // print the pid of the process
-    std::cout << "PID: " << getpid() << std::endl;
 
     // Create the capture manager
     CaptureManager captureManager(interface);
@@ -118,7 +116,7 @@ int main() {
             while (running) {
                 // Dump hosts to file if the atomic flag is set
                 if (dumpHosts) {
-                    hostManager.dumpHostsToFile("hosts.json");
+                    hostManager.dumpHostsToFile("/netprobe/output/hosts.json");
                     dumpHosts = false;
                 }
                 std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -145,7 +143,7 @@ int main() {
 
     // Print the host map
     hostManager.printHostMap();
-    hostManager.dumpHostsToFile("hosts.json");
+    hostManager.dumpHostsToFile("/netprobe/output/hosts.json");
 
     std::cout << "Program terminated." << std::endl;
 
