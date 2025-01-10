@@ -15,7 +15,29 @@
 - **Analyzers**: Abstract base class for analyzing network packets. Derived classes implement specific protocol analysis.
 - **HostManager**: Manages host information and updates the JSON representation of hosts.
 
-## Getting Started
+## Getting Started with Script
+
+### Prerequisites
+- Docker
+- python and pip
+- iptables or ufw
+
+### Starting Project
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/an0n1mity/cartographie-passive.git
+    cd cartographie-passive
+    ```
+    
+2. Start the script NetProbe.sh:
+    ```sh
+    sudo bash NetProbe.sh
+    ```
+    Sudo  is requierd since we edit firewall rules
+
+3. Press 'n' to start NetProbe
+
+## Getting Started Manually
 
 ### Prerequisites
 
