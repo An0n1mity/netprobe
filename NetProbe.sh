@@ -6,6 +6,36 @@ CONTAINER_VOLUME_PATH="/usr/src/app/Output"
 COMPOSE_FILE="$SCRIPT_DIR/docker-compose.yml"
 cd $SCRIPT_DIR
 
+check_and_install_requirements() {
+    # Check for iptables or ufw
+    if ! command -v iptables &> /dev/null && ! command -v ufw &> /dev/null; then
+        echo "iptables or ufw is required but not installed. Please install one of them."
+        exit 1
+    fi
+
+    # Check for python3 and pip
+    if ! command -v python3 &> /dev/null; then
+        echo "python3 is required but not installed. Installing python3..."
+        sudo apt-get update
+        sudo apt-get install -y python3
+    fi
+
+    if ! command -v pip &> /dev/null; then
+        echo "pip is required but not installed. Installing pip..."
+        sudo apt-get install -y python3-pip
+    fi
+
+    # Check for docker
+    if ! command -v docker &> /dev/null; then
+        echo "docker is required but not installed. Please install docker."
+        exit 1
+    fi
+
+    # Install Python dependencies
+    echo "Installing Python dependencies..."
+    pip install -r requirements.txt
+}
+
 # Fonction pour détecter la méthode de pare-feu à utiliser
 detect_firewall() {
     if command -v iptables &>/dev/null; then
@@ -96,7 +126,8 @@ To use NetProbe, following paquets must be installed:
                 unblock_outgoing
                 ;;
             n)
-            	#block_outgoing
+                check_and_install_requirements
+            	block_outgoing
                 manage_docker
                 ;;
             q)
@@ -106,9 +137,7 @@ To use NetProbe, following paquets must be installed:
                 break
                 ;;
             r) 
-            	echo -e "\nInstalling dependency ..."
-            	sudo -u $SUDO_USER pip install -r requirements.txt
-            	echo -e "\nDependency installed. \nCreating report ..."
+            	echo -e "\nCreating report ..."
                 docker compose exec netprobe kill -SIGUSR1 1
              	sudo -u $SUDO_USER python3 $SCRIPT_DIR/Rapport/Generate-Report.py $SCRIPT_DIR/Output/hosts.json $SCRIPT_DIR/Output/Report  # Il faudra vérifier le path
              	echo -e "\nReport created."
