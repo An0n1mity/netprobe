@@ -31,6 +31,12 @@ check_and_install_requirements() {
         exit 1
     fi
 
+    # Check for docker-compose
+    if ! command -v docker compose &> /dev/null; then
+        echo "docker-compose is required but not installed. Please install docker-compose."
+        exit 1
+    fi
+
     # Install Python dependencies
     echo "Installing Python dependencies..."
     pip install -r requirements.txt
