@@ -103,6 +103,10 @@ void HostManager::dumpHostsToFile(const std::string& filename) {
     file.close();
 }
 
+const Json::Value& HostManager::getHostsJson() const {
+    return hostsJson;
+}
+
 void HostManager::printHostMap() {
     std::cout << hostsJson << std::endl;
 }

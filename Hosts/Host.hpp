@@ -17,7 +17,7 @@
 
 void loadVendorDatabase(const std::string& filename, std::map<std::string, std::string>& vendorDatabase);
 void swapMacBytes(std::string& mac);
-std::string getVendorName(const std::string& macPrefix);
+std::string getVendorName(const std::string& macPrefix, const std::map<std::string, std::string>& vendorDatabase);
 std::string pcppMACAddressToString(const pcpp::MacAddress& mac, const std::map<std::string, std::string>& vendorDatabase);
 
 extern std::map<std::string, std::string> vendorDatabase;
@@ -89,7 +89,8 @@ class Host {
 
     Json::Value toJson() const {
         Json::Value hostJson;
-        hostJson["MAC"] = pcppMACAddressToString(mac_address, vendorDatabase);
+        hostJson["MAC"] = mac_address.toString();
+        hostJson["VENDOR"] = getVendorName(mac_address.toString(), vendorDatabase);
         hostJson["IP"] = ip_address.toString();
         hostJson["HOSTNAME"] = host_name;
         hostJson["FIRST SEEN"] = dateToString(first_seen);
@@ -282,6 +283,59 @@ class Host {
                     os << std::setw(2) << ((reversedBridgeSystemID >> 16) & 0xFF) << ":";
                     os << std::setw(2) << ((reversedBridgeSystemID >> 8) & 0xFF) << ":";
                     os << std::setw(2) << (reversedBridgeSystemID & 0xFF) << std::endl;
+                }
+                else if (protocol_data->protocol == ProtocolType::LLDP) {
+                    LLDPData* lldp_data = static_cast<LLDPData*>(protocol_data);
+                    os << "LLDP Data:" << std::endl;
+                    os << "\tTimestamp: " << host.dateToString(lldp_data->timestamp) << std::endl;
+                    os << "\tSender MAC: " << lldp_data->senderMAC << std::endl;
+                    os << "\tPort ID: " << lldp_data->portID << std::endl;
+                    os << "\tPort Description: " << lldp_data->portDescription << std::endl;
+                    os << "\tSystem Name: " << lldp_data->systemName << std::endl;
+                    os << "\tSystem Description: " << lldp_data->systemDescription << std::endl;
+                }
+                else if (protocol_data->protocol == ProtocolType::SSDP) {
+                    SSDPData* ssdp_data = static_cast<SSDPData*>(protocol_data);
+                    os << "SSDP Data:" << std::endl;
+                    os << "\tTimestamp: " << host.dateToString(ssdp_data->timestamp) << std::endl;
+                    os << "\tSender MAC: " << ssdp_data->senderMAC << std::endl;
+                    os << "\tSender IP: " << ssdp_data->senderIP << std::endl;
+                    os << "\tType: " << (ssdp_data->ssdpType == SSDPLayer::SSDPType::NOTIFY ? "NOTIFY" : "M-SEARCH") << std::endl;
+                    os << "\tHeaders:" << std::endl;
+                    for (const auto& header : ssdp_data->ssdpHeaders) {
+                        os << "\t\t" << header.first << ": " << header.second << std::endl;
+                    }
+                }
+                else if (protocol_data->protocol == ProtocolType::CDP) {
+                    CDPData* cdp_data = static_cast<CDPData*>(protocol_data);
+                    os << "CDP Data:" << std::endl;
+                    os << "\tTimestamp: " << host.dateToString(cdp_data->timestamp) << std::endl;
+                    os << "\tDevice ID: " << cdp_data->deviceId.id << std::endl;
+                    os << "\tAddresses:" << std::endl;
+                    for (const auto& address : cdp_data->addresses.addresses) {
+                        os << "\t\tProtocol Type: " << address.protocolType << std::endl;
+                        os << "\t\tProtocol Length: " << int(address.protocolLength) << std::endl;
+                        os << "\t\tProtocol: " << address.protocol << std::endl;
+                        os << "\t\tAddress Length: " << int(address.addressLength) << std::endl;
+                        os << "\t\tAddress: " << getAddressString(address) << std::endl;
+                    }
+                    os << "\tPort ID: " << cdp_data->portId << std::endl;
+                    os << "\tCapabilities: " << cdp_data->capabilitiesStr << std::endl;
+                    os << "\tSoftware Version: " << cdp_data->softwareVersion << std::endl;
+                    os << "\tPlatform: " << cdp_data->platform << std::endl;
+                    os << "\tVTP Management Domain: " << cdp_data->vtpManagementDomain << std::endl;
+                    os << "\tNative VLAN: " << cdp_data->nativeVlan << std::endl;
+                    os << "\tDuplex: " << (cdp_data->duplex == 0 ? "Half" : "Full") << std::endl;
+                    os << "\tTrust Bitmap: " << cdp_data->trustBitmap << std::endl;
+                    os << "\tUntrusted Port CoS: " << cdp_data->untrustedPortCos << std::endl;
+                    os << "\tManagement Addresses:" << std::endl;
+                    for (const auto& mgmtAddress : cdp_data->mgmtAddresses.addresses) {
+                        os << "\t\tProtocol Type: " << mgmtAddress.protocolType << std::endl;
+                        os << "\t\tProtocol Length: " << int(mgmtAddress.protocolLength) << std::endl;
+                        os << "\t\tProtocol: " << mgmtAddress.protocol << std::endl;
+                        os << "\t\tAddress Length: " << int(mgmtAddress.addressLength) << std::endl;
+                        os << "\t\tAddress: " << getAddressString(mgmtAddress) << std::endl;
+                    }
                 }
             }
         }

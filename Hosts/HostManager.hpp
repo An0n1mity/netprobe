@@ -71,6 +71,8 @@ public:
     void printHostMap();
     // Get the host map
     const std::unordered_map<pcpp::MacAddress, Host, MacAddressHash, MacAddressEqual>& getHostMap() const;
+    // Get the JSON representation of the hosts
+    const Json::Value& getHostsJson() const;
 private:
     std::unordered_map<pcpp::MacAddress, Host, MacAddressHash, MacAddressEqual> hostMap;
     Json::Value hostsJson;

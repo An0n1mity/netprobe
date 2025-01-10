@@ -101,17 +101,23 @@ void swapMacBytes(std::string& mac) {
 }
 
 // Function to get vendor name from MAC prefix
-std::string getVendorName(const std::string& macPrefix, const std::map<std::string, std::string>& vendorDatabase) {
+std::string getVendorName(const std::string& mac, const std::map<std::string, std::string>& vendorDatabase) {
+    std::string macPrefix = mac;
+    std::transform(macPrefix.begin(), macPrefix.end(), macPrefix.begin(), ::toupper);
+    macPrefix = macPrefix.substr(0, 8);  // Get the first 3 bytes of the MAC address
+    // Check if the MAC prefix is in the vendor database
     auto it = vendorDatabase.find(macPrefix);
     if (it != vendorDatabase.end()) {
-        return it->second;  // Return the vendor name
+        return it->second;
     }
     return "Unknown Vendor";  // Default if the vendor is not found
 }
 
 std::string pcppMACAddressToString(const pcpp::MacAddress& mac, const std::map<std::string, std::string>& vendorDatabase) {
     std::string macStr = mac.toString();
+    std::cout << "MAC: " << macStr << std::endl;
     std::transform(macStr.begin(), macStr.end(), macStr.begin(), ::toupper);
     std::string vendorName = getVendorName(macStr.substr(0, 8), vendorDatabase);
+    std::cout << "sub: " << macStr.substr(0, 8) << std::endl;
     return macStr + " (" + vendorName + ")";
 }
