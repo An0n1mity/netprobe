@@ -71,10 +71,10 @@ manage_docker() {
     	
     	echo -e "\nStarting NetProbe using Docker Compose..."
     	docker-compose -f $COMPOSE_FILE build
-    	docker-compose -f $COMPOSE_FILE up
+    	docker-compose -f $COMPOSE_FILE up -d
     	
     	# Set the network interface to promiscuous mode
-    	docker-compose -f $COMPOSE_FILE exec netprobe ip link set enp0s2 promisc
+    	#docker-compose -f $COMPOSE_FILE exec netprobe ip link set enp0s2 promisc
     	echo -e '\nNetProbe started.'
     else
     	# Vérifie si le fichier docker-compose.yml existe
@@ -87,7 +87,7 @@ manage_docker() {
     	docker compose -f $COMPOSE_FILE up -d --build
 
     	# Set the network interface to promiscuous mode
-    	docker compose -f $COMPOSE_FILE exec netprobe ip link set enp0s2 promisc
+    	#docker compose -f $COMPOSE_FILE exec netprobe ip link set enp0s2 promisc
     	echo -e '\nNetProbe started.'
     fi
 }
@@ -136,7 +136,11 @@ To use NetProbe, following paquets must be installed:
                 ;;
             r) 
             	echo -e "\nCreating report ..."
-                docker compose exec netprobe kill -SIGUSR1 1
+            	if [ "$DOCKER_COMPOSE_VERSION" = true ]; then
+            	    docker-compose exec netprobe kill -SIGUSR1 1
+            	else
+            	    docker compose exec netprobe kill -SIGUSR1 1
+            	fi
              	sudo -u $SUDO_USER python3 $SCRIPT_DIR/Rapport/Generate-Report.py $SCRIPT_DIR/Output/hosts.json $SCRIPT_DIR/Output/Report  # Il faudra vérifier le path
              	echo -e "\nReport created."
              	;;
