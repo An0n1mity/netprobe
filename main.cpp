@@ -38,7 +38,7 @@ int main() {
     loadVendorDatabase("/netprobe/build/manuf", vendorDatabase);
 
     // Get the network interface from environment variable
-    const char* interfaceEnv = getenv("INTERFACE");
+    const char* interfaceEnv = "eth0";//getenv("INTERFACE");
     if (!interfaceEnv) {
         std::cerr << "Error: INTERFACE environment variable is not set." << std::endl;
         return 1;
@@ -50,7 +50,7 @@ int main() {
     // Atomic flag for the infinite loop to dump hosts
     std::atomic<bool> dumpHosts(false);
     // Get the timeout duration from environment variable
-    const char* durationEnv = getenv("TIMEOUT");
+    const char* durationEnv = "10"; //getenv("TIMEOUT");
     if (!durationEnv) {
         std::cerr << "Error: TIMEOUT environment variable is not set." << std::endl;
         return 1;
@@ -146,7 +146,8 @@ int main() {
 
     // Print the host map
     hostManager.printHostMap();
-    hostManager.dumpHostsToFile("/netprobe/output/hosts.json");
+    //hostManager.dumpHostsToFile("/netprobe/output/hosts.json");
+    hostManager.dumpHostsToFile("./hosts.json");
 
     std::cout << "Program terminated." << std::endl;
 

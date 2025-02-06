@@ -21,6 +21,7 @@ void HostManager::updateHost(ProtocolType protocol, std::unique_ptr<ProtocolData
     timespec first_seen, last_seen;
 
     auto processHost = [&](pcpp::MacAddress mac, pcpp::IPAddress ip, const std::string& hostname, ProtocolType type) {
+        // If the host does not exists in the hostMap
         if (hostMap.find(mac) != hostMap.end()) {
             Host& host = hostMap[mac];
             host.updateProtocolData(type, std::move(data));
@@ -71,7 +72,7 @@ void HostManager::updateHost(ProtocolType protocol, std::unique_ptr<ProtocolData
         case ProtocolType::SSDP: {
             SSDPData* ssdpData = dynamic_cast<SSDPData*>(data.get());
             if (ssdpData) {
-                processHost(ssdpData->senderMAC, pcpp::IPv4Address::Zero, "", ProtocolType::SSDP);
+                processHost(ssdpData->senderMAC, ssdpData->senderIP, "", ProtocolType::SSDP);
             }
             break;
         }
