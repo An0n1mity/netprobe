@@ -84,6 +84,8 @@
 
 - **[Process of the Application](docs/process.md)**: Overview of the application components and process flow.
 
+- **[Adding a New Analyzer](docs/analyzers.md)**: Instructions for adding a new analyzer to the application.
+
 For more information, visit the [GitHub repository](https://github.com/an0n1mity/cartographie-passive).
 
 ## License
